@@ -1,0 +1,75 @@
+﻿<Window x:Class="Paint.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Paint"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="800" Width="1000" Loaded="Window_Loaded">
+    <Grid x:Name="appLayout">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="180"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <StackPanel Name="actionsStackPanel" Background="BurlyWood" Orientation="Horizontal">
+                <Button Name="btnSave" Content="Save" Width = "80" Height = "35" Click="btnSave_Click"/>
+                <Button Name="btnLoad" Content="Load" Width = "80" Height = "35" Click="btnLoad_Click"/>
+                
+                <CheckBox Name="btnEdit" Content="Edit" Width = "80" Height = "35" Checked="chboxEdit_Checked" Unchecked="chboxEdit_Unchecked"/>
+            </StackPanel>
+            <StackPanel Name="colorsStackPanel" Background="BurlyWood" Orientation="Horizontal">
+                <Label Name="lblCurrentColor" Background="Black" Width = "40" Height = "20" Margin="10,0,10,0"/>
+            </StackPanel>
+            <StackPanel Name="penWidthStackPanel" Background="BurlyWood" Orientation="Horizontal">
+                <Label Name="lblCurrentPenWidth" Content="Pen Width: 1" Width = "100" Height = "35" Margin="10,0,10,0"/>
+                <Slider Name="sliderPenWidth" Width = "100" Height = "20" Minimum="1" Maximum="10" Value="1" TickFrequency="1" TickPlacement="BottomRight" ValueChanged="sliderSize_ValueChanged"/>
+                <Button Name="btnDelete" Content="Delete" Width = "80" Height = "35" Click="btnDelete_Click" IsEnabled="False"/>
+                <Button Name="btnCopy" Content="Copy" Width = "80" Height = "35" Click="btnCopy_Click" IsEnabled="False"/>
+                <Button Name="btnCut" Content="Cut" Width = "80" Height = "35" Click="btnCut_Click" IsEnabled="False"/>
+                <Button Name="btnPaste" Content="Paste" Width = "80" Height = "35" Click="btnPaste_Click" IsEnabled="False"/>
+                <Button Name="btnUndo"  Content="Undo" Width = "80" Height = "35" Click="btnUndo_Click"/>
+                <Button Name="btnRedo"  Content="Redo" Width = "80" Height = "35" Click="btnRedo_Click"/>
+            </StackPanel>
+            <StackPanel Name="typeStackPanel" Background="BurlyWood" Orientation="Horizontal">
+            </StackPanel>
+            <StackPanel Name="layersStackPanel" Background="BurlyWood" Orientation="Horizontal">
+                <Button Name="btnAddLayer" Content="Add" Width = "50" Height = "35" Click="btnAddLayer_Click"/>
+                <Button Name="btnRemoveLayer" Content="Remove" Width = "50" Height = "35" Click="btnRemoveLayer_Click"/>
+                <Button Name="btnMoveUpLayer" Content="Up" Width = "50" Height = "35" Click="btnMoveUpLayer_Click"/>
+                <Button Name="btnMoveDownLayer" Content="Down" Width = "50" Height = "35" Click="btnMoveDownLayer_Click"/>
+                <Button Name="btnHideLayer" Content="Hide" Width = "50" Height = "35" Click="btnHide_Click"/>
+                <ListView Name="listViewLayers" Height = "50" Width="800" SelectionChanged="listViewLayers_SelectionChanged">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding LayerImage}"  Width="100" Height="69" Stretch="Fill" RenderOptions.BitmapScalingMode="Fant"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                </ListView>
+            </StackPanel>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" Background="Gray" HorizontalScrollBarVisibility="Auto">
+            <Grid x:Name="drawingLayout">
+                <Canvas  Name="drawingCanvas" Background="White" Width="800" Height="550">
+                </Canvas>
+                <Canvas Name="touchingCanvas" Background="Transparent" Width="800" Height="550" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" MouseWheel="Canvas_MouseWheel" ></Canvas>
+                <Canvas Name="EdittingCanvas" Background="Transparent" Width="800" Height="550" Visibility="Collapsed" MouseDown="Canvas_MouseDownEditing" MouseMove="Canvas_MouseMoveEditing">
+                    <Rectangle x:Name="MoveIcon" Height="25" Width="25">
+                        <Rectangle.Fill>
+                            <ImageBrush ImageSource="Assets/move.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="Fant"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Rectangle x:Name="StartRectangle" Height="10" Width="10" Fill="BurlyWood" Stroke="Black" StrokeThickness="1" />
+                    <Rectangle x:Name="EndRectangle" Height="10" Width="10" Fill="BurlyWood" Stroke="Black" StrokeThickness="1" />
+                </Canvas>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+    
+</Window>
