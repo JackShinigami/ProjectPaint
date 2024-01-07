@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IShapeContract", "IShapeContract\IShapeContract.csproj", "{2AA79074-B612-449B-BD98-1D9EE1BD4803}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IShapeContract", "IShapeContract\IShapeContract.csproj", "{2AA79074-B612-449B-BD98-1D9EE1BD4803}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EllipseLib", "EllipseLib\EllipseLib.csproj", "{FB326481-ED8E-44DA-B6CD-CA2BA5165051}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EllipseLib", "EllipseLib\EllipseLib.csproj", "{FB326481-ED8E-44DA-B6CD-CA2BA5165051}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LineLib", "LineLib\LineLib.csproj", "{AA526EBD-AE51-46C7-A407-B6E2B004028C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LineLib", "LineLib\LineLib.csproj", "{AA526EBD-AE51-46C7-A407-B6E2B004028C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentangleLib", "RentangleLib\RentangleLib.csproj", "{80637178-9CF2-4725-9CFA-73674374E873}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RectangleLib", "RentangleLib\RectangleLib.csproj", "{80637178-9CF2-4725-9CFA-73674374E873}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextLib", "TextLib\TextLib.csproj", "{1852CE01-9243-4AFE-9E04-8016D82CEF71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextLib", "TextLib\TextLib.csproj", "{1852CE01-9243-4AFE-9E04-8016D82CEF71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paint", "Paint\Paint.csproj", "{214AE392-44F8-4DFF-8642-DB7011CA9C45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Paint", "Paint\Paint.csproj", "{214AE392-44F8-4DFF-8642-DB7011CA9C45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

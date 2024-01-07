@@ -5,61 +5,225 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Paint"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen" WindowState = "Maximized"
         Title="MainWindow" Height="800" Width="1000" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <Style x:Key="RoundButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RoundLabelStyle" TargetType="Label">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="15">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Button" x:Key="TransparentButtonStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="LightBlue"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="Transparent"/>
+                            </Trigger>
+                            <EventTrigger RoutedEvent="Button.Click">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="border" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="LightBlue" Duration="0"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+
     <Grid x:Name="appLayout">
         <Grid.RowDefinitions>
-            <RowDefinition Height="180"/>
+            <RowDefinition Height="200"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
         <StackPanel>
-            <StackPanel Name="actionsStackPanel" Background="BurlyWood" Orientation="Horizontal">
-                <Button Name="btnSave" Content="Save" Width = "80" Height = "35" Click="btnSave_Click"/>
-                <Button Name="btnLoad" Content="Load" Width = "80" Height = "35" Click="btnLoad_Click"/>
-                
-                <CheckBox Name="btnEdit" Content="Edit" Width = "80" Height = "35" Checked="chboxEdit_Checked" Unchecked="chboxEdit_Unchecked"/>
-            </StackPanel>
-            <StackPanel Name="colorsStackPanel" Background="BurlyWood" Orientation="Horizontal">
-                <Label Name="lblCurrentColor" Background="Black" Width = "40" Height = "20" Margin="10,0,10,0"/>
-            </StackPanel>
-            <StackPanel Name="penWidthStackPanel" Background="BurlyWood" Orientation="Horizontal">
-                <Label Name="lblCurrentPenWidth" Content="Pen Width: 1" Width = "100" Height = "35" Margin="10,0,10,0"/>
-                <Slider Name="sliderPenWidth" Width = "100" Height = "20" Minimum="1" Maximum="10" Value="1" TickFrequency="1" TickPlacement="BottomRight" ValueChanged="sliderSize_ValueChanged"/>
-                <Button Name="btnDelete" Content="Delete" Width = "80" Height = "35" Click="btnDelete_Click" IsEnabled="False"/>
-                <Button Name="btnCopy" Content="Copy" Width = "80" Height = "35" Click="btnCopy_Click" IsEnabled="False"/>
-                <Button Name="btnCut" Content="Cut" Width = "80" Height = "35" Click="btnCut_Click" IsEnabled="False"/>
-                <Button Name="btnPaste" Content="Paste" Width = "80" Height = "35" Click="btnPaste_Click" IsEnabled="False"/>
-                <Button Name="btnUndo"  Content="Undo" Width = "80" Height = "35" Click="btnUndo_Click"/>
-                <Button Name="btnRedo"  Content="Redo" Width = "80" Height = "35" Click="btnRedo_Click"/>
-            </StackPanel>
-            <StackPanel Name="typeStackPanel" Background="BurlyWood" Orientation="Horizontal">
-            </StackPanel>
-            <StackPanel Name="layersStackPanel" Background="BurlyWood" Orientation="Horizontal">
-                <Button Name="btnAddLayer" Content="Add" Width = "50" Height = "35" Click="btnAddLayer_Click"/>
-                <Button Name="btnRemoveLayer" Content="Remove" Width = "50" Height = "35" Click="btnRemoveLayer_Click"/>
-                <Button Name="btnMoveUpLayer" Content="Up" Width = "50" Height = "35" Click="btnMoveUpLayer_Click"/>
-                <Button Name="btnMoveDownLayer" Content="Down" Width = "50" Height = "35" Click="btnMoveDownLayer_Click"/>
-                <Button Name="btnHideLayer" Content="Hide" Width = "50" Height = "35" Click="btnHide_Click"/>
-                <ListView Name="listViewLayers" Height = "50" Width="800" SelectionChanged="listViewLayers_SelectionChanged">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Image Source="{Binding LayerImage}"  Width="100" Height="69" Stretch="Fill" RenderOptions.BitmapScalingMode="Fant"/>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel />
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-                </ListView>
-            </StackPanel>
+            <DockPanel>
+                <StackPanel Name="actionsStackPanel"  Orientation="Horizontal" DockPanel.Dock="Left">
+                    <Button Margin="10, 10, 0, 10"  Name="btnSave" Width = "60" Height = "60" Click="btnSave_Click" BorderThickness="0"  Style="{StaticResource TransparentButtonStyle}">
+                        <Image Source="Assets/save.png" Width="40" Height="40" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Button>
+                    <Button Margin="5, 10, 0, 10" Name="btnLoad" Width = "60" Height = "60" Click="btnLoad_Click" BorderThickness="0" Style="{StaticResource TransparentButtonStyle}">
+                        <Image Source="Assets/open.png" Width="44" Height="50" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Button>
+                </StackPanel>
+
+                <Grid DockPanel.Dock="Top">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Border CornerRadius="5" BorderBrush="Gray" BorderThickness="1" Margin="10">
+                            <StackPanel x:Name="editStackPanel" Orientation="Horizontal" Margin="5" Opacity="0.5">
+                                <CheckBox Name="btnEdit" Content="Edit" Width="50" Height="35" Checked="chboxEdit_Checked" Unchecked="chboxEdit_Unchecked" VerticalContentAlignment="Center"/>
+                                <Button Name="btnDelete" Width="50" Height="35" Click="btnDelete_Click" IsEnabled="False" Style="{StaticResource TransparentButtonStyle}" Background="LightGray" BorderThickness = "0">
+                                    <Image Source="Assets/delete.png" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Button>
+                                <Button Name="btnCopy" Width="50" Height="35" Click="btnCopy_Click" IsEnabled="False" Style="{StaticResource TransparentButtonStyle}" BorderThickness = "0">
+                                    <Image Source="Assets/copy.png" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Button>
+                                <Button Name="btnCut" Width="50" Height="35" Click="btnCut_Click" IsEnabled="False" Style="{StaticResource TransparentButtonStyle}" BorderThickness = "0">
+                                    <Image Source="Assets/cut.png" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Button>
+                                <Button Name="btnPaste" Width="50" Height="35" Click="btnPaste_Click" IsEnabled="False" Style="{StaticResource TransparentButtonStyle}" BorderThickness="0" Background="Gray">
+                                    <Image Source="Assets/paste.png" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+
+                        <Border CornerRadius="5" BorderBrush="Gray" BorderThickness="1" Margin="10" >
+                            <StackPanel x:Name="reverseStackPanel" Orientation="Horizontal" Margin="5">
+                                <Button Name="btnUndo" Width="50" Height = "35" Click="btnUndo_Click" Style="{StaticResource TransparentButtonStyle}" BorderThickness = "0">
+                                    <Image Source="Assets/undo.png" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Button>
+                                <Button Name="btnRedo" Width="50" Height = "35" Click="btnRedo_Click" Style="{StaticResource TransparentButtonStyle}" BorderThickness = "0">
+                                    <Image Source="Assets/redo.png" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+
+                        <Border CornerRadius="5" BorderBrush="Gray" BorderThickness="1" Margin="10">
+                            <StackPanel Name="layersStackPanel"  Orientation="Horizontal" Margin="5">
+                                <Button Name="btnAddLayer"  Width="50" Height = "35" Click="btnAddLayer_Click" Style="{StaticResource TransparentButtonStyle}" BorderThickness = "0">
+                                    <Image Source="Assets/add_layer.png" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Button>
+                                <Button Name="btnRemoveLayer" Width="50" Height = "35" Click="btnRemoveLayer_Click" Style="{StaticResource TransparentButtonStyle}" BorderThickness = "0">
+                                    <Image Source="Assets/remove_layer.png" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Button>
+                                <Button Name="btnMoveUpLayer" Width="50" Height = "35" Click="btnMoveUpLayer_Click" Style="{StaticResource TransparentButtonStyle}" BorderThickness = "0">
+                                    <Image Source="Assets/up_layer.png" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Button>
+                                <Button Name="btnMoveDownLayer" Width="50" Height = "35" Click="btnMoveDownLayer_Click" Style="{StaticResource TransparentButtonStyle}" BorderThickness = "0">
+                                    <Image Source="Assets/down_layer.png" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Button>
+                                <Button Name="btnHideLayer" Width="50" Height = "35" Click="btnHide_Click" Style="{StaticResource TransparentButtonStyle}" BorderThickness = "0">
+                                    <Image Source="Assets/hide.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Margin="20, 0, 20, 0" DockPanel.Dock="Bottom">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <StackPanel Name="penWidthStackPanel"  Orientation="Horizontal" Margin="0, 0, 40, 0">
+                            <Label Name="lblCurrentPenWidth" Content="Width: 1" Height = "35" Margin="10,0,10,0" VerticalContentAlignment="Center"/>
+                            <Slider Name="sliderPenWidth" Width = "100" Height = "20" Minimum="1" Maximum="10" Value="1" TickFrequency="1" TickPlacement="BottomRight" ValueChanged="sliderSize_ValueChanged"/>
+                        </StackPanel>
+
+                        <ComboBox Margin="0, 0, 40, 0" Name="typeComboBox"  Width="100" Height="20" Background="Transparent"/>
+
+                        <Border Margin="0, 0, 40, 0" BorderBrush="Gray" BorderThickness="1" CornerRadius="10" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <StackPanel Name="shapesStackPanel" Orientation="Horizontal" >
+                                <Grid Name="shapesGrid">
+                                    <!-- Row Definitions -->
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Column Definitions -->
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Margin="0, 0, 40, 0" BorderBrush="Gray" BorderThickness="1" CornerRadius="10" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <StackPanel Name="colorsStackPanel" Orientation="Horizontal">
+                                <Grid Name="colorsGrid">
+                                    <!-- Row Definitions -->
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Column Definitions -->
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+
+            </DockPanel>
+
+            
+            
+            <ListView Name="listViewLayers" Height = "70" Margin="20, 12, 20, 0" SelectionChanged="listViewLayers_SelectionChanged">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Image Source="{Binding LayerImage}" Width="100" Height="69" Stretch="Fill" RenderOptions.BitmapScalingMode="Fant"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" Background="Gray" HorizontalScrollBarVisibility="Auto">
             <Grid x:Name="drawingLayout">
                 <Canvas  Name="drawingCanvas" Background="White" Width="800" Height="550">
                 </Canvas>
-                <Canvas Name="touchingCanvas" Background="Transparent" Width="800" Height="550" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" MouseWheel="Canvas_MouseWheel" ></Canvas>
-                <Canvas Name="EdittingCanvas" Background="Transparent" Width="800" Height="550" Visibility="Collapsed" MouseDown="Canvas_MouseDownEditing" MouseMove="Canvas_MouseMoveEditing">
+                <Canvas Name="touchingCanvas" Width="800" Height="550" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" MouseWheel="Canvas_MouseWheel" ></Canvas>
+                <Canvas Name="EdittingCanvas" Width="800" Height="550" Visibility="Collapsed" MouseDown="Canvas_MouseDownEditing" MouseMove="Canvas_MouseMoveEditing">
                     <Rectangle x:Name="MoveIcon" Height="25" Width="25">
                         <Rectangle.Fill>
                             <ImageBrush ImageSource="Assets/move.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="Fant"/>
@@ -71,5 +235,4 @@
             </Grid>
         </ScrollViewer>
     </Grid>
-    
 </Window>

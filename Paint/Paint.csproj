@@ -9,7 +9,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\add_layer.png" />
+    <None Remove="Assets\copy.png" />
+    <None Remove="Assets\cut.png" />
+    <None Remove="Assets\delete.png" />
+    <None Remove="Assets\down_layer.png" />
+    <None Remove="Assets\edit.png" />
+    <None Remove="Assets\ellipse.png" />
+    <None Remove="Assets\hide.png" />
+    <None Remove="Assets\line.png" />
     <None Remove="Assets\move.png" />
+    <None Remove="Assets\open.png" />
+    <None Remove="Assets\paste.png" />
+    <None Remove="Assets\rectangle.png" />
+    <None Remove="Assets\redo.png" />
+    <None Remove="Assets\remove_layer.png" />
+    <None Remove="Assets\save.png" />
+    <None Remove="Assets\show.png" />
+    <None Remove="Assets\text.png" />
+    <None Remove="Assets\undo.png" />
+    <None Remove="Assets\up_layer.png" />
+    <None Remove="FodyWeavers.xml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,11 +37,71 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EllipseLib\EllipseLib.csproj" />
     <ProjectReference Include="..\IShapeContract\IShapeContract.csproj" />
+    <ProjectReference Include="..\LineLib\LineLib.csproj" />
+    <ProjectReference Include="..\RentangleLib\RectangleLib.csproj" />
+    <ProjectReference Include="..\TextLib\TextLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\add_layer.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\copy.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\cut.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\delete.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\down_layer.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\edit.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\ellipse.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\hide.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\line.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\move.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\open.png" />
+    <Resource Include="Assets\paste.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\rectangle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\redo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\remove_layer.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\save.png" />
+    <Resource Include="Assets\show.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\text.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\undo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\up_layer.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="FodyWeavers.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

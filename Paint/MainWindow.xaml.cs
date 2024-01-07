@@ -90,6 +90,7 @@ namespace Paint
             }
 
             _factory = new ShapeFactory();
+
             foreach (var ability in abilities)
             {
                 _factory.Prototypes.Add(
@@ -98,18 +99,62 @@ namespace Paint
 
                 var button = new Button()
                 {
-                    Width = 80,
-                    Height = 35,
-                    Content = ability.Name,
-                    Tag = ability.Name
+                    Width = 30,
+                    Height = 30,
+                    Tag = ability.Name,
+                    Style = (Style)FindResource("TransparentButtonStyle"),
+                    BorderThickness = new Thickness(1),
+                    BorderBrush = Brushes.Transparent,
+                    Background = Brushes.Transparent,
                 };
+
+                var imagePath = $"Assets/{ability.Name}.png"; // Adjust the path as per your folder structure
+
+                var image = new System.Windows.Controls.Image
+                {
+                    Source = new BitmapImage(new Uri(imagePath, UriKind.Relative)),
+                    Width = 15,
+                    Height = 15,
+                };
+                RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+
+                button.Content = image;
+
                 button.Click += (sender, args) =>
                 {
-                    var control = (Button)sender;
-                    _choice = (string)control.Tag;
+                    var clickedButton = (Button)sender;
+
+                    foreach (UIElement element in shapesGrid.Children)
+                    {
+                        if (element is Border border)
+                        {
+                            var childButton = (Button)border.Child;
+                            childButton.BorderBrush = Brushes.Transparent;
+                            childButton.BorderThickness = new Thickness(1);
+                            childButton.Background = Brushes.Transparent;
+                        }
+                    }
+
+                    clickedButton.BorderBrush = Brushes.Black;
+
+                    _choice = (string)clickedButton.Tag;
                 };
-                actionsStackPanel.Children.Add(button);
-            };
+
+                var buttonBorder = new Border
+                {
+                    Width = button.Width,
+                    Height = button.Height,
+                    CornerRadius = new CornerRadius(button.Width / 2, button.Height / 2, button.Width / 2, button.Height / 2),
+                    Child = button
+                };
+
+                int row = shapesGrid.Children.Count / shapesGrid.ColumnDefinitions.Count;
+                int col = shapesGrid.Children.Count % shapesGrid.ColumnDefinitions.Count;
+
+                shapesGrid.Children.Add(buttonBorder);
+                Grid.SetRow(buttonBorder, row);
+                Grid.SetColumn(buttonBorder, col);
+            }
 
             foreach (var brush in _brushes)
             {
@@ -117,45 +162,76 @@ namespace Paint
                 {
                     Width = 20,
                     Height = 20,
-                    Background = brush
-                };
-                button.Click += (sender, args) =>
-                {
-                    var control = (Button)sender;
-                    _brush = (SolidColorBrush)control.Background;
-                    lblCurrentColor.Background = _brush;
+                    Content = "",
+                    Background = brush,
+                    BorderThickness = new Thickness(1),
+                    BorderBrush = Brushes.LightGray,
+                    Style = (Style)FindResource("RoundButtonStyle"),
                 };
 
-                colorsStackPanel.Children.Add(button);
-            };
+                button.Click += (sender, args) =>
+                {
+                    foreach (Border child in colorsGrid.Children)
+                    {
+                        var childButton = (Button)child.Child;
+                        childButton.BorderBrush = Brushes.LightGray;
+                        childButton.BorderThickness = new Thickness(1);
+                    }
+
+                    var clickedButton = (Button)sender;
+                    clickedButton.BorderBrush = Brushes.Black;
+
+                    _brush = (SolidColorBrush)clickedButton.Background;
+                };
+
+                var buttonBorder = new Border
+                {
+                    Width = 30,
+                    Height = 30,
+                    CornerRadius = new CornerRadius(button.Width / 2, button.Height / 2, button.Width / 2, button.Height / 2),
+                    Child = button
+                };
+
+                int row = colorsGrid.Children.Count / colorsGrid.ColumnDefinitions.Count;
+                int col = colorsGrid.Children.Count % colorsGrid.ColumnDefinitions.Count;
+
+                colorsGrid.Children.Add(buttonBorder);
+                Grid.SetRow(buttonBorder, row);
+                Grid.SetColumn(buttonBorder, col);
+            }
 
             foreach (var strokeType in _strokeTypes)
             {
-                var button = new Button()
+                var line = new Line()
                 {
-                    Width = 60,
-                    Height = 40,
-                    Content = new Line()
-                    {
-                        X1 = 0,
-                        Y1 = 10,
-                        X2 = 50,
-                        Y2 = 10,
-                        Stroke = Brushes.Black,
-                        StrokeThickness = 2,
-                        StrokeDashArray = strokeType
-                    }
-                };
-                button.Click += (sender, args) =>
-                {
-                    var control = (Button)sender;
-                    var rectangle = (Line)control.Content;
-                    _strokeType = rectangle.StrokeDashArray;
+                    X1 = 0,
+                    Y1 = 10,
+                    X2 = 50,
+                    Y2 = 10,
+                    Stroke = Brushes.Black,
+                    StrokeThickness = 2,
+                    StrokeDashArray = strokeType,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
                 };
 
-                typeStackPanel.Children.Add(button);
+                typeComboBox.Items.Add(line);
+            }
+
+            typeComboBox.SelectionChanged += (sender, args) =>
+            {
+                var comboBox = (ComboBox)sender;
+                var selectedLine = (Line)comboBox.SelectedItem;
+                _strokeType = selectedLine.StrokeDashArray;
             };
 
+            if (_strokeTypes.Count > 0)
+            {
+                typeComboBox.SelectedIndex = 0;
+            }
+
+
+            //
             if (abilities.Count > 0)
             {
                 _choice = abilities[0].Name;
@@ -376,7 +452,7 @@ namespace Paint
             if (isDrawing)
             {
 
-                Title = $"{_start.X}, {_start.Y} => {_end.X}, {_end.Y}";
+                Title = $"editing: {isEditting.ToString()}, drawing: {isDrawing.ToString()}";
 
                 preview = _factory.Create(_choice);
 
@@ -691,7 +767,7 @@ namespace Paint
             btnCopy.IsEnabled = true;
             btnCut.IsEnabled = true;
             btnPaste.IsEnabled = true;
-
+            editStackPanel.Opacity = 1;
         }
 
         private void chboxEdit_Unchecked(object sender, RoutedEventArgs e)
@@ -702,9 +778,8 @@ namespace Paint
             btnCopy.IsEnabled = false;
             btnCut.IsEnabled = false;
             btnPaste.IsEnabled = false;
-
+            editStackPanel.Opacity = 0.5;
         }
-
         
 
         private void btnAddLayer_Click(object sender, RoutedEventArgs e)
@@ -786,19 +861,33 @@ namespace Paint
         {
             currentLayer = (Layer)listViewLayers.SelectedItem;
             currentLayerIndex = listViewLayers.SelectedIndex;
-            
-            if(currentLayerIndex < 0)
+
+            var imagePath = "";
+
+            if (currentLayerIndex < 0)
                 return;
             if (currentLayer.IsVisible)
             {
-                btnHideLayer.Content = "Hide";
+                imagePath = $"Assets/hide.png";
+                currentLayer.IsVisible = false;
             }
             else
-            { 
-                 btnHideLayer.Content = "Show";
+            {
+                currentLayer.IsVisible = true;
+                imagePath = $"Assets/show.png";
             }
-            
-            if(isEditting)
+            var image = new System.Windows.Controls.Image
+            {
+                Source = new BitmapImage(new Uri(imagePath, UriKind.Relative)),
+                Width = 24,
+                Height = 24,
+            };
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+
+            btnHideLayer.Content = image;
+
+
+            if (isEditting)
             {
                 isEditting = false;
                 EdittingCanvas.Visibility = Visibility.Collapsed;
@@ -807,16 +896,27 @@ namespace Paint
 
         private void btnHide_Click(object sender, RoutedEventArgs e)
         {
-            if(currentLayer.IsVisible)
+            var imagePath = "";
+            if (currentLayer.IsVisible)
             {
+                imagePath = $"Assets/hide.png";
                 currentLayer.IsVisible = false;
-                btnHideLayer.Content = "Show";
             }
             else
             {
                 currentLayer.IsVisible = true;
-                btnHideLayer.Content = "Hide";
+                imagePath = $"Assets/show.png";
             }
+
+            var image = new System.Windows.Controls.Image
+            {
+                Source = new BitmapImage(new Uri(imagePath, UriKind.Relative)),
+                Width = 24,
+                Height = 24,
+            };
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+
+            btnHideLayer.Content = image;
             LoadAllShapes();
         }
 
