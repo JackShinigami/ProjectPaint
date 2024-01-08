@@ -28,7 +28,7 @@ namespace Paint
         {
             InitializeComponent();
         }
-
+        
         ShapeFactory _factory;
         List<SolidColorBrush> _brushes = new List<SolidColorBrush>()
         {
@@ -248,9 +248,7 @@ namespace Paint
             listViewLayers.ItemsSource = _layerManager.Layers;
             listViewLayers.SelectedItem = currentLayer;
 
-            Canvas.SetZIndex(drawingCanvas, 0);
-            Canvas.SetZIndex(touchingCanvas, 1);
-            Canvas.SetZIndex(EdittingCanvas, 1);
+            
 
             transformGroup.Children.Add(scale);
             transformGroup.Children.Add(translate);
@@ -869,11 +867,9 @@ namespace Paint
             if (currentLayer.IsVisible)
             {
                 imagePath = $"Assets/hide.png";
-                currentLayer.IsVisible = false;
             }
             else
             {
-                currentLayer.IsVisible = true;
                 imagePath = $"Assets/show.png";
             }
             var image = new System.Windows.Controls.Image

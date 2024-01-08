@@ -220,10 +220,10 @@
 
         <ScrollViewer Grid.Row="1" Background="Gray" HorizontalScrollBarVisibility="Auto">
             <Grid x:Name="drawingLayout">
-                <Canvas  Name="drawingCanvas" Background="White" Width="800" Height="550">
+                <Canvas  Name="drawingCanvas" Background="White" Width="800" Height="550" Panel.ZIndex="0">
                 </Canvas>
-                <Canvas Name="touchingCanvas" Width="800" Height="550" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" MouseWheel="Canvas_MouseWheel" ></Canvas>
-                <Canvas Name="EdittingCanvas" Width="800" Height="550" Visibility="Collapsed" MouseDown="Canvas_MouseDownEditing" MouseMove="Canvas_MouseMoveEditing">
+                <Canvas Name="touchingCanvas" Width="800" Height="550" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" MouseWheel="Canvas_MouseWheel" Panel.ZIndex="2" Background="Transparent"></Canvas>
+                <Canvas Name="EdittingCanvas" Width="800" Height="550" Visibility="Collapsed" MouseDown="Canvas_MouseDownEditing" MouseMove="Canvas_MouseMoveEditing" Panel.ZIndex="1" Background="Transparent">
                     <Rectangle x:Name="MoveIcon" Height="25" Width="25">
                         <Rectangle.Fill>
                             <ImageBrush ImageSource="Assets/move.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="Fant"/>
