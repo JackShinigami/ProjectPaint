@@ -15,7 +15,7 @@ namespace RentangleLib
             Point end = Points[1];
             IShapeContract.CreateRightPointsForDraw.Change(ref start, ref end);
             double width = Math.Abs(end.X - start.X);
-            double height = Math.Abs(end.Y -start.Y);
+            double height = Math.Abs(end.Y - start.Y);
 
             var element = new System.Windows.Shapes.Rectangle()
             {

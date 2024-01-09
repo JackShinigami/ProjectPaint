@@ -792,6 +792,7 @@ namespace Paint
 
             _layerManager.AddLayer((int)drawingCanvas.ActualWidth, (int)drawingCanvas.ActualHeight, drawingLayout);
             data.NewLayer = _layerManager.Layers[_layerManager.Layers.Count - 1];
+            listViewLayers.SelectedIndex = _layerManager.Layers.Count - 1;
             undoRedoManager.AddUndoRedo(data);
         }
 

@@ -27,6 +27,7 @@
     <None Remove="Assets\save.png" />
     <None Remove="Assets\show.png" />
     <None Remove="Assets\text.png" />
+    <None Remove="Assets\triangle.png" />
     <None Remove="Assets\undo.png" />
     <None Remove="Assets\up_layer.png" />
     <None Remove="FodyWeavers.xml" />
@@ -42,6 +43,7 @@
     <ProjectReference Include="..\LineLib\LineLib.csproj" />
     <ProjectReference Include="..\RentangleLib\RectangleLib.csproj" />
     <ProjectReference Include="..\TextLib\TextLib.csproj" />
+    <ProjectReference Include="..\TriangleLib\TriangleLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -95,6 +97,7 @@
     <Resource Include="Assets\text.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\triangle.png" />
     <Resource Include="Assets\undo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
