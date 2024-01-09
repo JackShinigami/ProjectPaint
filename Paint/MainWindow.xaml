@@ -99,10 +99,11 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5" />
             <ColumnDefinition Width="120" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.ColumnSpan="2">
+        <StackPanel Grid.ColumnSpan="3">
             <DockPanel>
                 <StackPanel Name="actionsStackPanel"
                             Orientation="Horizontal"
@@ -410,19 +411,21 @@
 
         <Border Grid.Row="1"
                 Grid.Column="1"
-                Width="120"
+                Grid.ColumnSpan="2"
+                Width="Auto"
                 Background="White"
                 HorizontalAlignment="Right">
 
             <ListView Name="listViewLayers"
                       Margin="5"
+                      HorizontalAlignment="Stretch"
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                       SelectionChanged="listViewLayers_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Image Source="{Binding LayerImage}"
-                               Width="100"
-                               Height="69"
+                               Width="Auto"
+                               Height="Auto"
                                Stretch="Fill"
                                RenderOptions.BitmapScalingMode="Fant" />
                     </DataTemplate>
@@ -495,6 +498,15 @@
                 </ListView.ItemsPanel>
             </ListView>
         </Border>
+
+        <GridSplitter Grid.Row="1"
+                      Grid.Column="1"
+                      Width="5"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Background="#988"
+                      ShowsPreview="True"
+                      ResizeBehavior="PreviousAndNext" />
 
         <ScrollViewer Grid.Row="1"
                       Background="Gray"
