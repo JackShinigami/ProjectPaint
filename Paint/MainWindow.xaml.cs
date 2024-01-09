@@ -28,7 +28,7 @@ namespace Paint
         {
             InitializeComponent();
         }
-        
+
         ShapeFactory _factory;
         List<SolidColorBrush> _brushes = new List<SolidColorBrush>()
         {
@@ -58,6 +58,8 @@ namespace Paint
         SolidColorBrush _brush;
         int _thickness = 1;
         DoubleCollection _strokeType;
+
+        private string _filename = "";
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -248,7 +250,7 @@ namespace Paint
             listViewLayers.ItemsSource = _layerManager.Layers;
             listViewLayers.SelectedItem = currentLayer;
 
-            
+
 
             transformGroup.Children.Add(scale);
             transformGroup.Children.Add(translate);
@@ -259,10 +261,10 @@ namespace Paint
 
             EdittingCanvas.LayoutTransform = transformGroup;
             EdittingCanvas.MouseWheel += Canvas_MouseWheel;
-            
+
             touchingCanvas.LayoutTransform = transformGroup;
             touchingCanvas.MouseWheel += Canvas_MouseWheel;
-            
+
 
             StartRectangle.MouseDown += (sender, args) =>
             {
@@ -280,7 +282,7 @@ namespace Paint
             StartRectangle.MouseUp += (sender, args) =>
             {
                 isResizing = false;
-                if(dataUndoRedoForEditting != null)
+                if (dataUndoRedoForEditting != null)
                 {
                     dataUndoRedoForEditting.NewShape = shapeEditting.Clone();
                     undoRedoManager.AddUndoRedo(dataUndoRedoForEditting);
@@ -305,7 +307,7 @@ namespace Paint
             EndRectangle.MouseUp += (sender, args) =>
             {
                 isResizing = false;
-                if(dataUndoRedoForEditting != null)
+                if (dataUndoRedoForEditting != null)
                 {
                     dataUndoRedoForEditting.NewShape = shapeEditting.Clone();
                     undoRedoManager.AddUndoRedo(dataUndoRedoForEditting);
@@ -330,7 +332,7 @@ namespace Paint
             MoveIcon.MouseUp += (sender, args) =>
             {
                 isMoving = false;
-                if(dataUndoRedoForEditting != null)
+                if (dataUndoRedoForEditting != null)
                 {
                     dataUndoRedoForEditting.NewShape = shapeEditting.Clone();
                     undoRedoManager.AddUndoRedo(dataUndoRedoForEditting);
@@ -357,9 +359,9 @@ namespace Paint
 
         // Create a new TransformGroup and add the ScaleTransform and TranslateTransform to it
         TransformGroup transformGroup = new TransformGroup();
-        
+
         bool isEditting = false;
-        
+
         IShape shapeEditting;
         IShape shapeCopy;
 
@@ -371,14 +373,14 @@ namespace Paint
         UndoRedoManager undoRedoManager = new UndoRedoManager();
         ShapeUndoRedo dataUndoRedoForEditting;
 
-        
+
         // Các hàm xử lí sự kiện Edit 
         private void Canvas_MouseDownEditing(object sender, MouseButtonEventArgs e)
         {
             //kiem tra xem co click vao 1 shape nao khong
             Canvas canvas = (Canvas)sender;
             var element = canvas.InputHitTest(e.GetPosition(canvas)) as UIElement;
-            if(element == canvas)
+            if (element == canvas)
             {
                 isEditting = false;
                 EdittingCanvas.Visibility = Visibility.Collapsed;
@@ -387,9 +389,9 @@ namespace Paint
 
         private void Canvas_MouseMoveEditing(object sender, MouseEventArgs e)
         {
-            if(isResizing)
+            if (isResizing)
             {
-                if(chosenResizeRec == StartRectangle)
+                if (chosenResizeRec == StartRectangle)
                 {
                     System.Windows.Point mousePosition = e.GetPosition(drawingCanvas);
                     shapeEditting.Points[0] = mousePosition;
@@ -399,8 +401,7 @@ namespace Paint
                     Canvas.SetLeft(MoveIcon, (shapeEditting.Points[0].X + shapeEditting.Points[1].X) / 2 - 13);
                     Canvas.SetTop(MoveIcon, (shapeEditting.Points[0].Y + shapeEditting.Points[1].Y) / 2 - 13);
                     LoadAllShapes();
-                }
-                else if(chosenResizeRec == EndRectangle)
+                } else if (chosenResizeRec == EndRectangle)
                 {
                     System.Windows.Point mousePosition = e.GetPosition(drawingCanvas);
                     shapeEditting.Points[1] = mousePosition;
@@ -411,8 +412,8 @@ namespace Paint
                     Canvas.SetTop(MoveIcon, (shapeEditting.Points[0].Y + shapeEditting.Points[1].Y) / 2 - 13);
                     LoadAllShapes();
                 }
-                
-            }else if (isMoving)
+
+            } else if (isMoving)
             {
                 if (chosenResizeRec == MoveIcon)
                 {
@@ -429,10 +430,10 @@ namespace Paint
                     Canvas.SetTop(MoveIcon, (shapeEditting.Points[0].Y + shapeEditting.Points[1].Y) / 2 - 13);
                     LoadAllShapes();
                 }
-            } 
-                
+            }
+
         }
-     
+
         //-------------------------------------------------------------------------------------------
         // Các hàm xử lí sự kiện vẽ
 
@@ -442,7 +443,7 @@ namespace Paint
             _start = e.GetPosition(drawingCanvas);
         }
 
-        
+
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
@@ -478,11 +479,11 @@ namespace Paint
                     Canvas.SetLeft(MoveIcon, (preview.Points[0].X + preview.Points[1].X) / 2 - 13);
                     Canvas.SetTop(MoveIcon, (preview.Points[0].Y + preview.Points[1].Y) / 2 - 13);
                 };
-              
+
                 drawingCanvas.Children.Add(preUI);
                 currentLayer._canvas.Children.Add(preview.Draw());
             }
-                
+
         }
 
         private void LoadAllShapes()
@@ -498,8 +499,7 @@ namespace Paint
                     {
                         layer._canvas.Children.Add(shape.Draw());
                     }
-                }
-                else
+                } else
                 {
                     foreach (var shape in layer.Shapes)
                     {
@@ -516,10 +516,10 @@ namespace Paint
                             Canvas.SetLeft(EndRectangle, shape.Points[1].X - 5);
                             Canvas.SetTop(EndRectangle, shape.Points[1].Y - 5);
 
-                            Canvas.SetLeft(MoveIcon, (shape.Points[0].X + shape.Points[1].X)/2 - 13);
-                            Canvas.SetTop(MoveIcon, (shape.Points[0].Y + shape.Points[1].Y)/2 - 13);
+                            Canvas.SetLeft(MoveIcon, (shape.Points[0].X + shape.Points[1].X) / 2 - 13);
+                            Canvas.SetTop(MoveIcon, (shape.Points[0].Y + shape.Points[1].Y) / 2 - 13);
                         };
-                        
+
                         drawingCanvas.Children.Add(ui);
                     }
                 }
@@ -544,7 +544,7 @@ namespace Paint
             isDrawing = false;
         }
         //-------------------------------------------------------------------------------------------
-       
+
         // Các hàm xử lí sự kiện Save và Load hình ảnh
         public void SaveCanvases(string filename)
         {
@@ -563,7 +563,7 @@ namespace Paint
 
                 context.DrawRectangle(new VisualBrush(drawingCanvas), null, new Rect(new System.Windows.Point(), size));
 
-            } 
+            }
 
             renderBitmap.Render(drawingVisual);
 
@@ -592,11 +592,14 @@ namespace Paint
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            string filename = OpenSaveFileDialog();
-            if (filename != "")
+
+
+            if (_filename == "")
             {
-                SaveCanvases(filename);
+                _filename = OpenSaveFileDialog();
             }
+            SaveCanvases(_filename);
+
         }
 
         private string OpenLoadFileDialog()
@@ -621,9 +624,9 @@ namespace Paint
             bitmap.BeginInit();
             bitmap.UriSource = new Uri(filename, UriKind.Absolute);
             bitmap.EndInit();
-            double factor =  drawingCanvas.ActualWidth / bitmap.Width;
+            double factor = drawingCanvas.ActualWidth / bitmap.Width;
 
-            image.Width = Math.Min( bitmap.Width * factor, bitmap.Width);
+            image.Width = Math.Min(bitmap.Width * factor, bitmap.Width);
             image.Height = Math.Min(bitmap.Height * factor, bitmap.Height);
             image.Stretch = Stretch.Fill;
             // Set the image source
@@ -659,8 +662,8 @@ namespace Paint
             // Add Image to Canvas
             drawingCanvas.Children.Add(image);
         }
-        
-        
+
+
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
             string filename = OpenLoadFileDialog();
@@ -685,7 +688,7 @@ namespace Paint
         // Các hàm xử lí sự kiện Delete, Copy, Cut, Paste, Undo, Redo, Add, Remove, MoveUp, MoveDown, Hide, Show
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            if(shapeEditting != null)
+            if (shapeEditting != null)
             {
                 if (currentLayer.Shapes.Contains(shapeEditting))
                 {
@@ -708,7 +711,7 @@ namespace Paint
 
         private void btnCopy_Click(object sender, RoutedEventArgs e)
         {
-            if(shapeEditting != null)
+            if (shapeEditting != null)
             {
                 shapeCopy = shapeEditting.Clone();
             }
@@ -716,7 +719,7 @@ namespace Paint
 
         private void btnCut_Click(object sender, RoutedEventArgs e)
         {
-            if(shapeEditting != null)
+            if (shapeEditting != null)
             {
                 if (currentLayer.Shapes.Contains(shapeEditting))
                 {
@@ -741,7 +744,7 @@ namespace Paint
 
         private void btnPaste_Click(object sender, RoutedEventArgs e)
         {
-            if(shapeCopy != null)
+            if (shapeCopy != null)
             {
                 DataUndoRedo data = new ShapeUndoRedo()
                 {
@@ -752,7 +755,11 @@ namespace Paint
                 };
                 undoRedoManager.AddUndoRedo(data);
 
+                var newShape = shapeCopy.Clone();
+
                 currentLayer.AddShape(shapeCopy);
+
+                shapeCopy = newShape;
                 LoadAllShapes();
                 EdittingCanvas.Visibility = Visibility.Collapsed;
             }
@@ -778,10 +785,10 @@ namespace Paint
             btnPaste.IsEnabled = false;
             editStackPanel.Opacity = 0.5;
         }
-        
+
 
         private void btnAddLayer_Click(object sender, RoutedEventArgs e)
-        { 
+        {
             LayerUndoRedo data = new LayerUndoRedo()
             {
                 drawingLayout = drawingLayout,
@@ -868,8 +875,7 @@ namespace Paint
             if (currentLayer.IsVisible)
             {
                 imagePath = $"Assets/hide.png";
-            }
-            else
+            } else
             {
                 imagePath = $"Assets/show.png";
             }
@@ -898,8 +904,8 @@ namespace Paint
             {
                 imagePath = $"Assets/hide.png";
                 currentLayer.IsVisible = false;
-            }
-            else
+
+            } else
             {
                 currentLayer.IsVisible = true;
                 imagePath = $"Assets/show.png";
@@ -923,7 +929,7 @@ namespace Paint
             {
                 System.Windows.Point mousePosition = e.GetPosition(drawingCanvas);
 
-                
+
 
                 // Calculate the zoom factor (you can adjust this to get the desired zoom speed)
                 double zoomFactor = e.Delta > 0 ? 1.1 : 1 / 1.1;
@@ -936,6 +942,19 @@ namespace Paint
                 translate.X = (1 - zoomFactor) * (mousePosition.X + translate.X);
                 translate.Y = (1 - zoomFactor) * (mousePosition.Y + translate.Y);
 
+            } else if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            {
+
+                // horizontal scrolling
+                if (e.Delta > 0)
+                {
+                    translate.X += 15;
+                } else
+                {
+                    translate.X -= 15;
+                }
+
+
             }
 
         }
@@ -945,7 +964,7 @@ namespace Paint
             undoRedoManager.Undo();
             LoadAllShapes();
             listViewLayers.SelectedIndex = 0;
-            
+
             EdittingCanvas.Visibility = Visibility.Collapsed;
 
         }
@@ -956,6 +975,177 @@ namespace Paint
             LoadAllShapes();
             listViewLayers.SelectedIndex = 0;
             EdittingCanvas.Visibility = Visibility.Collapsed;
+        }
+
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            // Get the ScrollViewer object
+            ScrollViewer scv = (ScrollViewer)sender;
+            if (scv != null)
+            {
+                // Check whether the horizontal scrollbar is visible
+                if (scv.ComputedHorizontalScrollBarVisibility == Visibility.Visible)
+                {
+                    // Adjust the offset
+                    translate.X = -scv.HorizontalOffset;
+                } else
+                {
+                    // The horizontal scrollbar is not visible
+                    translate.X = 0;
+                }
+
+                // Check whether the vertical scrollbar is visible
+                if (scv.ComputedVerticalScrollBarVisibility == Visibility.Visible)
+                {
+                    // Adjust the offset
+                    translate.Y = -scv.VerticalOffset;
+                } else
+                {
+                    // The vertical scrollbar is not visible
+                    translate.Y = 0;
+                }
+
+
+            }
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Ctrl + Z
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                if (e.Key == Key.Z)
+                {
+                    undoRedoManager.Undo();
+                    LoadAllShapes();
+                    listViewLayers.SelectedIndex = 0;
+                    EdittingCanvas.Visibility = Visibility.Collapsed;
+                }
+
+                // Ctrl + Y
+                if (e.Key == Key.Y)
+                {
+                    undoRedoManager.Redo();
+                    LoadAllShapes();
+                    listViewLayers.SelectedIndex = 0;
+                    EdittingCanvas.Visibility = Visibility.Collapsed;
+                }
+
+                // Ctrl + E
+                if (e.Key == Key.E)
+                {
+                    if (isEditting)
+                    {
+                        isEditting = false;
+                        btnEdit.IsChecked = true;
+                        chboxEdit_Checked(sender, null);
+                    } else
+                    {
+                        isEditting = true;
+                        btnEdit.IsChecked = false;
+                        chboxEdit_Unchecked(sender, null);
+                    }
+                }
+
+                // Ctrl + C
+                if (e.Key == Key.C)
+                {
+                    if (shapeEditting != null)
+                    {
+                        shapeCopy = shapeEditting.Clone();
+                    }
+                }
+
+                // Ctrl + V
+
+                if (e.Key == Key.V)
+                {
+                    if (shapeCopy != null)
+                    {
+                        DataUndoRedo data = new ShapeUndoRedo()
+                        {
+                            CurrentLayer = currentLayer,
+                            NewShape = shapeCopy.Clone(),
+                            IndexInLayer = currentLayer.Shapes.Count,
+                            TypeOfData = ShapeUndoRedo.Type.Add
+                        };
+                        undoRedoManager.AddUndoRedo(data);
+
+                        var newShape = shapeCopy.Clone();
+
+                        currentLayer.AddShape(shapeCopy);
+
+                        shapeCopy = newShape;
+                        LoadAllShapes();
+                        EdittingCanvas.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                // Ctrl + X
+
+                if (e.Key == Key.X)
+                {
+                    if (shapeEditting != null)
+                    {
+                        if (currentLayer.Shapes.Contains(shapeEditting))
+                        {
+                            shapeCopy = shapeEditting.Clone();
+
+                            DataUndoRedo data = new ShapeUndoRedo()
+                            {
+                                CurrentLayer = currentLayer,
+                                OldShape = shapeEditting.Clone(),
+                                IndexInLayer = currentLayer.Shapes.IndexOf(shapeEditting),
+                                TypeOfData = ShapeUndoRedo.Type.Remove
+                            };
+                            undoRedoManager.AddUndoRedo(data);
+
+                            currentLayer.RemoveShape(shapeEditting);
+                            LoadAllShapes();
+                            EdittingCanvas.Visibility = Visibility.Collapsed;
+                            shapeEditting = null;
+                        }
+                    }
+                }
+
+                // Ctrl + S
+
+                if (e.Key == Key.S)
+                {
+                    if (_filename == "")
+                    {
+                        _filename = OpenSaveFileDialog();
+                    }
+                    SaveCanvases(_filename);
+                }
+
+                // Ctrl + O
+                if (e.Key == Key.O)
+                {
+                    string filename = OpenLoadFileDialog();
+                    if (filename != "")
+                    {
+                        LoadImageToLayer(currentLayer, filename);
+                    }
+                }
+
+                // Ctrl + N new layer
+                if (e.Key == Key.N)
+                {
+                    LayerUndoRedo data = new LayerUndoRedo()
+                    {
+                        drawingLayout = drawingLayout,
+                        layerManager = _layerManager,
+                        TypeOfData = LayerUndoRedo.Type.Add,
+                        IndexInLayout = _layerManager.Layers.Count
+                    };
+
+                    _layerManager.AddLayer((int)drawingCanvas.ActualWidth, (int)drawingCanvas.ActualHeight, drawingLayout);
+                    data.NewLayer = _layerManager.Layers[_layerManager.Layers.Count - 1];
+                    listViewLayers.SelectedIndex = _layerManager.Layers.Count - 1;
+                    undoRedoManager.AddUndoRedo(data);
+                }
+            }
         }
     }
 }

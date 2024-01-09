@@ -8,6 +8,7 @@
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         Title="MainWindow"
+        KeyDown="Window_KeyDown"
         Height="800"
         Width="1000"
         Loaded="Window_Loaded">
@@ -93,7 +94,7 @@
 
     <Grid x:Name="appLayout">
         <Grid.RowDefinitions>
-            <RowDefinition Height="120" />
+            <RowDefinition Height="150" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -304,100 +305,105 @@
 
                 <Grid Margin="20, 0, 20, 0"
                       DockPanel.Dock="Bottom">
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Center">
-                        <StackPanel Name="penWidthStackPanel"
-                                    Orientation="Horizontal"
-                                    Margin="0, 0, 40, 0">
-                            <Label Name="lblCurrentPenWidth"
-                                   Content="Width: 1"
-                                   Height="35"
-                                   Margin="10,0,10,0"
-                                   VerticalContentAlignment="Center" />
-                            <Slider Name="sliderPenWidth"
-                                    Width="100"
-                                    Height="20"
-                                    Minimum="1"
-                                    Maximum="10"
-                                    Value="1"
-                                    TickFrequency="1"
-                                    TickPlacement="BottomRight"
-                                    ValueChanged="sliderSize_ValueChanged" />
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <StackPanel Name="penWidthStackPanel"
+                                        Orientation="Horizontal"
+                                        Margin="0, 0, 40, 0">
+                                <Label Name="lblCurrentPenWidth"
+                                       Content="Width: 1"
+                                       Height="35"
+                                       Margin="10,0,10,0"
+                                       VerticalContentAlignment="Center" />
+                                <Slider Name="sliderPenWidth"
+                                        Width="100"
+                                        Height="20"
+                                        Minimum="1"
+                                        Maximum="10"
+                                        Value="1"
+                                        TickFrequency="1"
+                                        TickPlacement="BottomRight"
+                                        ValueChanged="sliderSize_ValueChanged" />
+                            </StackPanel>
+
+                            <ComboBox Margin="0, 0, 40, 0"
+                                      Name="typeComboBox"
+                                      Width="100"
+                                      Height="20"
+                                      Background="Transparent" />
+
+                            <Border Margin="0, 0, 40, 0"
+                                    BorderBrush="Gray"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                <StackPanel Name="shapesStackPanel"
+                                            Orientation="Horizontal">
+                                    <Grid Name="shapesGrid">
+                                        <!-- Row Definitions -->
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Column Definitions -->
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
                         </StackPanel>
+                        
 
-                        <ComboBox Margin="0, 0, 40, 0"
-                                  Name="typeComboBox"
-                                  Width="100"
-                                  Height="20"
-                                  Background="Transparent" />
+                            <Border Margin="0, 10, 40, 0"
+                                    BorderBrush="Gray"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Top">
+                                <StackPanel Name="colorsStackPanel"
+                                            Orientation="Horizontal">
+                                    <Grid Name="colorsGrid">
+                                        <!-- Row Definitions -->
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
-                        <Border Margin="0, 0, 40, 0"
-                                BorderBrush="Gray"
-                                BorderThickness="1"
-                                CornerRadius="10"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top">
-                            <StackPanel Name="shapesStackPanel"
-                                        Orientation="Horizontal">
-                                <Grid Name="shapesGrid">
-                                    <!-- Row Definitions -->
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-
-                                    <!-- Column Definitions -->
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                </Grid>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Margin="0, 0, 40, 0"
-                                BorderBrush="Gray"
-                                BorderThickness="1"
-                                CornerRadius="10"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top">
-                            <StackPanel Name="colorsStackPanel"
-                                        Orientation="Horizontal">
-                                <Grid Name="colorsGrid">
-                                    <!-- Row Definitions -->
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-
-                                    <!-- Column Definitions -->
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                </Grid>
-                            </StackPanel>
-                        </Border>
+                                        <!-- Column Definitions -->
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        
+                        
                     </StackPanel>
                 </Grid>
 
@@ -408,6 +414,14 @@
 
 
         </StackPanel>
+
+        <Label Grid.Column="2"
+               Content="Layers"
+               Style="{StaticResource RoundLabelStyle}"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Bottom"
+               Width="100"
+               Height="30" />
 
         <Border Grid.Row="1"
                 Grid.Column="1"
@@ -442,7 +456,7 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListViewItem">
                                     <Border x:Name="itemBorder"
-                                            BorderBrush="White"
+                                            BorderBrush="#aaa"
                                             BorderThickness="2"
                                             CornerRadius="10"
                                             Background="White">
