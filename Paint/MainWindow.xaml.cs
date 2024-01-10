@@ -1080,7 +1080,7 @@ namespace Paint
                 if (scv.ComputedHorizontalScrollBarVisibility == Visibility.Visible)
                 {
                     // Adjust the offset
-                    translate.X = -scv.HorizontalOffset;
+                    translate.X = -scv.VerticalOffset;
                 } else
                 {
                     // The horizontal scrollbar is not visible
@@ -1224,7 +1224,7 @@ namespace Paint
                     }
                 }
 
-                // Ctrl + N new layer
+                // Ctrl + N
                 if (e.Key == Key.N)
                 {
                     LayerUndoRedo data = new LayerUndoRedo()
