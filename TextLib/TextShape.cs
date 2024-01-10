@@ -27,7 +27,7 @@ namespace TextLib
             return textShape;
         }
 
-        private string text="";
+        private string text = "";
 
         public string Text
         {
@@ -44,10 +44,10 @@ namespace TextLib
             double height = Math.Abs(end.Y - start.Y);
 
             Brush borderBrush = Brushes.Gray;
-            if (text != "") 
+            if (text != "")
                 borderBrush = Brushes.Transparent;
 
-            
+
             var element = new TextBox()
             {
                 Width = width,
@@ -56,8 +56,8 @@ namespace TextLib
                 Text = text,
                 BorderBrush = borderBrush,
                 TextWrapping = TextWrapping.Wrap,
-                TextAlignment = TextAlignment.Center,  
-                FontSize = Thickness*10,
+                TextAlignment = TextAlignment.Center,
+                FontSize = Thickness * 10,
                 FontFamily = new FontFamily("Cambria"),
                 Foreground = Brush,
             };
@@ -71,6 +71,88 @@ namespace TextLib
             Canvas.SetTop(element, start.Y);
 
             return element;
+        }
+
+        public override string ToKleString(int index = 0)
+        {
+
+            string kleString = "text";
+            // add name
+            kleString += Name + " ";
+            // add brush
+            kleString += Brush.ToString() + " ";
+            // add thickness
+            kleString += Thickness.ToString() + " ";
+            // add dash array as comma separated string
+
+
+
+            for (int i = 0; i < DashArray.Count; i++)
+            {
+                kleString += DashArray[i].ToString();
+                if (i != DashArray.Count - 1)
+                    kleString += ",";
+            }
+
+            kleString += " ";
+            // add points
+            foreach (var point in Points)
+            {
+                kleString += point.X.ToString() + " " + point.Y.ToString() + " ";
+            }
+            kleString += Text;
+            return kleString;
+        }
+
+        public override object? FromKleString(string kleString)
+        {
+            try
+            {
+                string[] words = kleString.Split(' ');
+
+                // check name
+                if (words[0] != Name)
+                    return null;
+
+                // get brush
+                Brush = (Brush)new BrushConverter().ConvertFromString(words[1]);
+
+                // get thickness
+                Thickness = int.Parse(words[2]);
+
+                // get dash array
+                DashArray = new DoubleCollection();
+                string[] dashArrayString = words[3].Split(',');
+
+                if (dashArrayString[0] != "")
+                    foreach (var dash in dashArrayString)
+                    {
+                        DashArray.Add(double.Parse(dash));
+                    }
+
+                // get points
+                for (int i = 4; i < 8; i += 2)
+                {
+                    Points.Add(new Point(double.Parse(words[i]), double.Parse(words[i + 1])));
+                }
+
+                if (Points.Count != 2)
+                    return null;
+
+                // all words after 7 is text
+
+                string text = "";
+                for (int j = 8; j < words.Length; j++)
+                {
+                    text += words[j] + " ";
+                }
+
+                return this;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

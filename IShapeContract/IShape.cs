@@ -1,10 +1,11 @@
 
 using System.Windows;
 using System.Windows.Media;
+using IKleFileContract;
 
 namespace IShapeContract
 {
-    public abstract class IShape
+    public abstract class IShape: IKleFile
     {
         public abstract string Name { get; }
         public List<Point> Points { get; set; } = new List<Point>();

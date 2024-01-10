@@ -21,6 +21,20 @@ namespace Paint
             Layers = new BindingList<Layer>();
         }
 
+        public void AddLayer(Layer layer, double Width, double Height, Panel DrawingLayout)
+        {
+            layer._canvas = new Canvas()
+            {
+                Background = Brushes.Transparent,
+                Visibility = Visibility.Hidden,
+                Width = Width,
+                Height = Height
+            };
+            DrawingLayout.Children.Add(layer._canvas);
+            DrawingLayout.UpdateLayout();
+            Layers.Add(layer);
+        }
+
         public void AddLayer(double Width, double Height, Panel DrawingLayout)
         {
             Layer newLayer = new Layer()

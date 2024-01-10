@@ -9,7 +9,7 @@ namespace Paint
 {
     public class ShapeFactory
     {
-        public Dictionary<string, IShape> Prototypes =
+        public static Dictionary<string, IShape> Prototypes =
             new Dictionary<string, IShape>();
 
         public IShape Create(String choice)

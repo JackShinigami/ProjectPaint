@@ -1,47 +1,74 @@
-
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
 using IShapeContract;
 
-namespace RentangleLib
+
+namespace TriangleLib
 {
-    public class RectangleShape : IShape
+    public class TriangleShape : IShape
     {
+
+
+        public override string Name => "Triangle";
+
         public override UIElement Draw()
         {
-            // TODO: can dam bao Diem 0 < Diem 1
+
             Point start = Points[0];
             Point end = Points[1];
+
+            bool isSwapped = start.Y > end.Y;
+
             IShapeContract.CreateRightPointsForDraw.Change(ref start, ref end);
+
             double width = Math.Abs(end.X - start.X);
             double height = Math.Abs(end.Y - start.Y);
+            Point point1 = new Point(start.X + width / 2, start.Y);
+            Point point2 = new Point(start.X, start.Y + height);
+            Point point3 = new Point(start.X + width, start.Y + height);
 
-            var element = new System.Windows.Shapes.Rectangle()
+            Point point4 = new Point(start.X + width / 2, start.Y + height);
+            Point point5 = new Point(start.X + width, start.Y);
+            Point point6 = new Point(start.X, start.Y);
+
+            var element = new System.Windows.Shapes.Polygon()
             {
-                Width = width,
-                Height = height,
                 Stroke = Brush,
                 StrokeThickness = Thickness,
                 StrokeDashArray = DashArray
             };
-            Canvas.SetLeft(element, start.X);
-            Canvas.SetTop(element, start.Y);
+
+            if (!isSwapped)
+            {
+                element.Points.Add(point1);
+                element.Points.Add(point2);
+                element.Points.Add(point3);
+            } else
+            {
+                element.Points.Add(point4);
+                element.Points.Add(point5);
+                element.Points.Add(point6);
+            }
 
             return element;
         }
 
+
         public override IShape Clone()
         {
-            var rectangle = new RectangleShape();
-            rectangle.Brush = this.Brush;
-            rectangle.Thickness = this.Thickness;
-            rectangle.DashArray = this.DashArray;
+            var triangle = new TriangleShape
+            {
+                Brush = this.Brush,
+                Thickness = this.Thickness,
+                DashArray = this.DashArray
+            };
+
             foreach (var point in this.Points)
             {
-                rectangle.Points.Add(new Point(point.X, point.Y));
+                triangle.Points.Add(new Point(point.X, point.Y));
             }
-            return rectangle;
+            return triangle;
         }
 
         public override string ToKleString(int index = 0)
@@ -56,7 +83,6 @@ namespace RentangleLib
             kleString += Thickness.ToString() + " ";
             // add dash array as comma separated string
 
-
             for (int i = 0; i < DashArray.Count; i++)
             {
                 kleString += DashArray[i].ToString();
@@ -65,35 +91,36 @@ namespace RentangleLib
             }
 
             kleString += " ";
+
             // add points
             foreach (var point in Points)
             {
                 kleString += point.X.ToString() + " " + point.Y.ToString() + " ";
             }
 
-
             return kleString;
         }
 
         public override object? FromKleString(string kleString)
         {
+            string[] kleStringArray = kleString.Split(' ');
+            int index = 0;
             try
             {
-                string[] words = kleString.Split(' ');
-
-                // check name
-                if (words[0] != Name)
+                // get name
+                if (kleStringArray[index++] != Name)
+                {
                     return null;
-
+                }
                 // get brush
-                Brush = (Brush)new BrushConverter().ConvertFromString(words[1]);
+                BrushConverter brushConverter = new BrushConverter();
+                Brush = (Brush)brushConverter.ConvertFromString(kleStringArray[index++]);
 
                 // get thickness
-                Thickness = int.Parse(words[2]);
+                Thickness = int.Parse(kleStringArray[index++]);
 
                 // get dash array
-                DashArray = new DoubleCollection();
-                string[] dashArrayString = words[3].Split(',');
+                string[] dashArrayString = kleStringArray[index++].Split(',');
 
                 if (dashArrayString[0] != "")
                     foreach (var dash in dashArrayString)
@@ -102,15 +129,18 @@ namespace RentangleLib
                     }
 
                 // get points
-                for (int i = 4; i < 8; i += 2)
+                while (index < 8)
                 {
-                    Points.Add(new Point(double.Parse(words[i]), double.Parse(words[i + 1])));
+                    Points.Add(new Point(double.Parse(kleStringArray[index++]), double.Parse(kleStringArray[index++])));
                 }
 
                 if (Points.Count != 2)
+                {
                     return null;
+                }
 
                 return this;
+
 
             }
             catch
@@ -119,8 +149,6 @@ namespace RentangleLib
             }
 
         }
-
-        public override string Name => "Rectangle";
     }
 
 }

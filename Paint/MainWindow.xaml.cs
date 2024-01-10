@@ -59,8 +59,16 @@ namespace Paint
         int _thickness = 1;
         DoubleCollection _strokeType;
 
+        private string _filename = "";
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
+
+            if (_filename == "")
+                Title = $"Paint - Unnamed";
+            else Title = $"Paint - {_filename}";
+
             var abilities = new List<IShape>();
 
             // Do tim cac kha nang
@@ -90,26 +98,74 @@ namespace Paint
             }
 
             _factory = new ShapeFactory();
+
             foreach (var ability in abilities)
             {
-                _factory.Prototypes.Add(
+                ShapeFactory.Prototypes.Add(
                     ability.Name, ability
                 );
 
+
                 var button = new Button()
                 {
-                    Width = 80,
-                    Height = 35,
-                    Content = ability.Name,
-                    Tag = ability.Name
+                    Width = 30,
+                    Height = 30,
+                    Tag = ability.Name,
+                    Style = (Style)FindResource("TransparentButtonStyle"),
+                    BorderThickness = new Thickness(1),
+                    BorderBrush = Brushes.Transparent,
+                    Background = Brushes.Transparent,
                 };
+
+                var imagePath = $"Assets/{ability.Name}.png"; // Adjust the path as per your folder structure
+
+                var image = new System.Windows.Controls.Image
+                {
+                    Source = new BitmapImage(new Uri(imagePath, UriKind.Relative)),
+                    Width = 15,
+                    Height = 15,
+                };
+                RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+
+                button.Content = image;
+
                 button.Click += (sender, args) =>
                 {
-                    var control = (Button)sender;
-                    _choice = (string)control.Tag;
+                    var clickedButton = (Button)sender;
+
+                    foreach (UIElement element in shapesGrid.Children)
+                    {
+                        if (element is Border border)
+                        {
+                            var childButton = (Button)border.Child;
+                            childButton.BorderBrush = Brushes.Transparent;
+                            childButton.BorderThickness = new Thickness(1);
+                            childButton.Background = Brushes.Transparent;
+                        }
+                    }
+
+                    clickedButton.BorderBrush = Brushes.Black;
+
+                    _choice = (string)clickedButton.Tag;
                 };
-                actionsStackPanel.Children.Add(button);
-            };
+
+                var buttonBorder = new Border
+                {
+                    Width = button.Width,
+                    Height = button.Height,
+                    CornerRadius = new CornerRadius(button.Width / 2, button.Height / 2, button.Width / 2, button.Height / 2),
+                    Child = button
+                };
+
+                int row = shapesGrid.Children.Count / shapesGrid.ColumnDefinitions.Count;
+                int col = shapesGrid.Children.Count % shapesGrid.ColumnDefinitions.Count;
+
+                shapesGrid.Children.Add(buttonBorder);
+                Grid.SetRow(buttonBorder, row);
+                Grid.SetColumn(buttonBorder, col);
+            }
+
+            ShapeFactory.Prototypes.Add("ImageShape", new ImageShape(null));
 
             foreach (var brush in _brushes)
             {
@@ -117,45 +173,76 @@ namespace Paint
                 {
                     Width = 20,
                     Height = 20,
-                    Background = brush
-                };
-                button.Click += (sender, args) =>
-                {
-                    var control = (Button)sender;
-                    _brush = (SolidColorBrush)control.Background;
-                    lblCurrentColor.Background = _brush;
+                    Content = "",
+                    Background = brush,
+                    BorderThickness = new Thickness(1),
+                    BorderBrush = Brushes.LightGray,
+                    Style = (Style)FindResource("RoundButtonStyle"),
                 };
 
-                colorsStackPanel.Children.Add(button);
-            };
+                button.Click += (sender, args) =>
+                {
+                    foreach (Border child in colorsGrid.Children)
+                    {
+                        var childButton = (Button)child.Child;
+                        childButton.BorderBrush = Brushes.LightGray;
+                        childButton.BorderThickness = new Thickness(1);
+                    }
+
+                    var clickedButton = (Button)sender;
+                    clickedButton.BorderBrush = Brushes.Black;
+
+                    _brush = (SolidColorBrush)clickedButton.Background;
+                };
+
+                var buttonBorder = new Border
+                {
+                    Width = 30,
+                    Height = 30,
+                    CornerRadius = new CornerRadius(button.Width / 2, button.Height / 2, button.Width / 2, button.Height / 2),
+                    Child = button
+                };
+
+                int row = colorsGrid.Children.Count / colorsGrid.ColumnDefinitions.Count;
+                int col = colorsGrid.Children.Count % colorsGrid.ColumnDefinitions.Count;
+
+                colorsGrid.Children.Add(buttonBorder);
+                Grid.SetRow(buttonBorder, row);
+                Grid.SetColumn(buttonBorder, col);
+            }
 
             foreach (var strokeType in _strokeTypes)
             {
-                var button = new Button()
+                var line = new Line()
                 {
-                    Width = 60,
-                    Height = 40,
-                    Content = new Line()
-                    {
-                        X1 = 0,
-                        Y1 = 10,
-                        X2 = 50,
-                        Y2 = 10,
-                        Stroke = Brushes.Black,
-                        StrokeThickness = 2,
-                        StrokeDashArray = strokeType
-                    }
-                };
-                button.Click += (sender, args) =>
-                {
-                    var control = (Button)sender;
-                    var rectangle = (Line)control.Content;
-                    _strokeType = rectangle.StrokeDashArray;
+                    X1 = 0,
+                    Y1 = 10,
+                    X2 = 50,
+                    Y2 = 10,
+                    Stroke = Brushes.Black,
+                    StrokeThickness = 2,
+                    StrokeDashArray = strokeType,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
                 };
 
-                typeStackPanel.Children.Add(button);
+                typeComboBox.Items.Add(line);
+            }
+
+            typeComboBox.SelectionChanged += (sender, args) =>
+            {
+                var comboBox = (ComboBox)sender;
+                var selectedLine = (Line)comboBox.SelectedItem;
+                _strokeType = selectedLine.StrokeDashArray;
             };
 
+            if (_strokeTypes.Count > 0)
+            {
+                typeComboBox.SelectedIndex = 0;
+            }
+
+
+            //
             if (abilities.Count > 0)
             {
                 _choice = abilities[0].Name;
@@ -172,9 +259,7 @@ namespace Paint
             listViewLayers.ItemsSource = _layerManager.Layers;
             listViewLayers.SelectedItem = currentLayer;
 
-            Canvas.SetZIndex(drawingCanvas, 0);
-            Canvas.SetZIndex(touchingCanvas, 1);
-            Canvas.SetZIndex(EdittingCanvas, 1);
+
 
             transformGroup.Children.Add(scale);
             transformGroup.Children.Add(translate);
@@ -185,10 +270,10 @@ namespace Paint
 
             EdittingCanvas.LayoutTransform = transformGroup;
             EdittingCanvas.MouseWheel += Canvas_MouseWheel;
-            
+
             touchingCanvas.LayoutTransform = transformGroup;
             touchingCanvas.MouseWheel += Canvas_MouseWheel;
-            
+
 
             StartRectangle.MouseDown += (sender, args) =>
             {
@@ -206,7 +291,7 @@ namespace Paint
             StartRectangle.MouseUp += (sender, args) =>
             {
                 isResizing = false;
-                if(dataUndoRedoForEditting != null)
+                if (dataUndoRedoForEditting != null)
                 {
                     dataUndoRedoForEditting.NewShape = shapeEditting.Clone();
                     undoRedoManager.AddUndoRedo(dataUndoRedoForEditting);
@@ -231,7 +316,7 @@ namespace Paint
             EndRectangle.MouseUp += (sender, args) =>
             {
                 isResizing = false;
-                if(dataUndoRedoForEditting != null)
+                if (dataUndoRedoForEditting != null)
                 {
                     dataUndoRedoForEditting.NewShape = shapeEditting.Clone();
                     undoRedoManager.AddUndoRedo(dataUndoRedoForEditting);
@@ -256,7 +341,7 @@ namespace Paint
             MoveIcon.MouseUp += (sender, args) =>
             {
                 isMoving = false;
-                if(dataUndoRedoForEditting != null)
+                if (dataUndoRedoForEditting != null)
                 {
                     dataUndoRedoForEditting.NewShape = shapeEditting.Clone();
                     undoRedoManager.AddUndoRedo(dataUndoRedoForEditting);
@@ -264,7 +349,25 @@ namespace Paint
                 }
                 currentLayer.GetBitmap();
             };
+
+            this.MouseMove += MainWindow_MouseMove;
         }
+
+        private void MainWindow_MouseMove(object sender, MouseEventArgs e)
+        {
+            // Nếu chuột đang được nhấn
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                if (isDrawing)
+                {
+                    if (!touchingCanvas.IsMouseOver)
+                    {
+                        Canvas_MouseUp(null, null);
+                    }
+                }
+            }
+        }
+
 
         //các biến lưu trạng thái
         bool isDrawing = false;
@@ -283,9 +386,9 @@ namespace Paint
 
         // Create a new TransformGroup and add the ScaleTransform and TranslateTransform to it
         TransformGroup transformGroup = new TransformGroup();
-        
+
         bool isEditting = false;
-        
+
         IShape shapeEditting;
         IShape shapeCopy;
 
@@ -297,14 +400,14 @@ namespace Paint
         UndoRedoManager undoRedoManager = new UndoRedoManager();
         ShapeUndoRedo dataUndoRedoForEditting;
 
-        
+
         // Các hàm xử lí sự kiện Edit 
         private void Canvas_MouseDownEditing(object sender, MouseButtonEventArgs e)
         {
             //kiem tra xem co click vao 1 shape nao khong
             Canvas canvas = (Canvas)sender;
             var element = canvas.InputHitTest(e.GetPosition(canvas)) as UIElement;
-            if(element == canvas)
+            if (element == canvas)
             {
                 isEditting = false;
                 EdittingCanvas.Visibility = Visibility.Collapsed;
@@ -313,9 +416,9 @@ namespace Paint
 
         private void Canvas_MouseMoveEditing(object sender, MouseEventArgs e)
         {
-            if(isResizing)
+            if (isResizing)
             {
-                if(chosenResizeRec == StartRectangle)
+                if (chosenResizeRec == StartRectangle)
                 {
                     System.Windows.Point mousePosition = e.GetPosition(drawingCanvas);
                     shapeEditting.Points[0] = mousePosition;
@@ -325,8 +428,7 @@ namespace Paint
                     Canvas.SetLeft(MoveIcon, (shapeEditting.Points[0].X + shapeEditting.Points[1].X) / 2 - 13);
                     Canvas.SetTop(MoveIcon, (shapeEditting.Points[0].Y + shapeEditting.Points[1].Y) / 2 - 13);
                     LoadAllShapes();
-                }
-                else if(chosenResizeRec == EndRectangle)
+                } else if (chosenResizeRec == EndRectangle)
                 {
                     System.Windows.Point mousePosition = e.GetPosition(drawingCanvas);
                     shapeEditting.Points[1] = mousePosition;
@@ -337,8 +439,8 @@ namespace Paint
                     Canvas.SetTop(MoveIcon, (shapeEditting.Points[0].Y + shapeEditting.Points[1].Y) / 2 - 13);
                     LoadAllShapes();
                 }
-                
-            }else if (isMoving)
+
+            } else if (isMoving)
             {
                 if (chosenResizeRec == MoveIcon)
                 {
@@ -355,10 +457,10 @@ namespace Paint
                     Canvas.SetTop(MoveIcon, (shapeEditting.Points[0].Y + shapeEditting.Points[1].Y) / 2 - 13);
                     LoadAllShapes();
                 }
-            } 
-                
+            }
+
         }
-     
+
         //-------------------------------------------------------------------------------------------
         // Các hàm xử lí sự kiện vẽ
 
@@ -368,15 +470,13 @@ namespace Paint
             _start = e.GetPosition(drawingCanvas);
         }
 
-        
+
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
             _end = e.GetPosition(drawingCanvas);
             if (isDrawing)
             {
-
-                Title = $"{_start.X}, {_start.Y} => {_end.X}, {_end.Y}";
 
                 preview = _factory.Create(_choice);
 
@@ -404,11 +504,11 @@ namespace Paint
                     Canvas.SetLeft(MoveIcon, (preview.Points[0].X + preview.Points[1].X) / 2 - 13);
                     Canvas.SetTop(MoveIcon, (preview.Points[0].Y + preview.Points[1].Y) / 2 - 13);
                 };
-              
+
                 drawingCanvas.Children.Add(preUI);
                 currentLayer._canvas.Children.Add(preview.Draw());
             }
-                
+
         }
 
         private void LoadAllShapes()
@@ -424,8 +524,7 @@ namespace Paint
                     {
                         layer._canvas.Children.Add(shape.Draw());
                     }
-                }
-                else
+                } else
                 {
                     foreach (var shape in layer.Shapes)
                     {
@@ -442,13 +541,54 @@ namespace Paint
                             Canvas.SetLeft(EndRectangle, shape.Points[1].X - 5);
                             Canvas.SetTop(EndRectangle, shape.Points[1].Y - 5);
 
-                            Canvas.SetLeft(MoveIcon, (shape.Points[0].X + shape.Points[1].X)/2 - 13);
-                            Canvas.SetTop(MoveIcon, (shape.Points[0].Y + shape.Points[1].Y)/2 - 13);
+                            Canvas.SetLeft(MoveIcon, (shape.Points[0].X + shape.Points[1].X) / 2 - 13);
+                            Canvas.SetTop(MoveIcon, (shape.Points[0].Y + shape.Points[1].Y) / 2 - 13);
                         };
-                        
+
                         drawingCanvas.Children.Add(ui);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Lưu file KLE (Khánh Lê)
+        /// </summary>
+        /// <param name="filename"></param>
+        void SaveToKleFile(string filename)
+        {
+            string kleString = "";
+            foreach (var layer in _layerManager.Layers)
+            {
+                kleString += layer.ToKleString(_layerManager.Layers.IndexOf(layer));
+            }
+            File.WriteAllText(filename, kleString);
+        }
+
+        /// <summary>
+        /// Lưu file KLE (Khánh Lê)
+        /// </summary>
+        void OnSaveKle()
+        {
+            if (_filename == "")
+            {
+                _filename = OpenSaveKleFileDialog();
+            }
+            if (_filename != "")
+                SaveToKleFile(_filename);
+        }
+
+        /// <summary>
+        /// Lưu như... (Khánh Lê)
+        /// </summary>
+        void OnSaveAs()
+        {
+            string oldFilename = _filename;
+            _filename = "";
+            OnSaveKle();
+            if (_filename == "")
+            {
+                _filename = oldFilename;
             }
         }
 
@@ -470,7 +610,7 @@ namespace Paint
             isDrawing = false;
         }
         //-------------------------------------------------------------------------------------------
-       
+
         // Các hàm xử lí sự kiện Save và Load hình ảnh
         public void SaveCanvases(string filename)
         {
@@ -489,7 +629,7 @@ namespace Paint
 
                 context.DrawRectangle(new VisualBrush(drawingCanvas), null, new Rect(new System.Windows.Point(), size));
 
-            } 
+            }
 
             renderBitmap.Render(drawingVisual);
 
@@ -507,7 +647,19 @@ namespace Paint
         private string OpenSaveFileDialog()
         {
             var dialog = new Microsoft.Win32.SaveFileDialog();
+            dialog.FileName = _filename;
             dialog.Filter = "PNG (*.png)|*.png";
+            dialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            if (dialog.ShowDialog() == true)
+            {
+                return dialog.FileName;
+            }
+            return "";
+        }
+        private string OpenSaveKleFileDialog()
+        {
+            var dialog = new Microsoft.Win32.SaveFileDialog();
+            dialog.Filter = "KLE (*.kle)|*.kle";
             dialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
             if (dialog.ShowDialog() == true)
             {
@@ -518,11 +670,9 @@ namespace Paint
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            string filename = OpenSaveFileDialog();
-            if (filename != "")
-            {
-                SaveCanvases(filename);
-            }
+
+            OnSaveAs();
+
         }
 
         private string OpenLoadFileDialog()
@@ -536,6 +686,48 @@ namespace Paint
             }
             return "";
         }
+        private string OpenLoadKleFileDialog()
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Filter = "KLE (*.kle)|*.kle";
+            dialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            if (dialog.ShowDialog() == true)
+            {
+                return dialog.FileName;
+            }
+            return "";
+        }
+
+        private void OnLoadKle()
+        {
+            _filename = OpenLoadKleFileDialog();
+            if (_filename != "")
+            {
+                string[] kleStringArray = File.ReadAllLines(_filename);
+                _layerManager.Layers.Clear();
+                string layerInfo = "";
+                Layer layer = new Layer();
+                foreach (var kleString in kleStringArray)
+                {
+                    if (kleString == "Layer")
+                    {
+                        if (layerInfo != "")
+                        {
+                            layer.FromKleString(layerInfo);
+                            _layerManager.AddLayer(layer, (int)drawingCanvas.ActualWidth, (int)drawingCanvas.ActualHeight, drawingLayout);
+                            layer.GetBitmap();
+                            layerInfo = "";
+                            layer = new Layer();
+                        }
+                    } else
+                    {
+                        layerInfo += kleString + "\n";
+                    }
+                }
+                listViewLayers.SelectedIndex = 0;
+                LoadAllShapes();
+            }
+        }
 
         private void LoadImageToLayer(Layer layer, string filename)
         {
@@ -547,9 +739,9 @@ namespace Paint
             bitmap.BeginInit();
             bitmap.UriSource = new Uri(filename, UriKind.Absolute);
             bitmap.EndInit();
-            double factor =  drawingCanvas.ActualWidth / bitmap.Width;
+            double factor = drawingCanvas.ActualWidth / bitmap.Width;
 
-            image.Width = Math.Min( bitmap.Width * factor, bitmap.Width);
+            image.Width = Math.Min(bitmap.Width * factor, bitmap.Width);
             image.Height = Math.Min(bitmap.Height * factor, bitmap.Height);
             image.Stretch = Stretch.Fill;
             // Set the image source
@@ -585,15 +777,11 @@ namespace Paint
             // Add Image to Canvas
             drawingCanvas.Children.Add(image);
         }
-        
-        
+
+
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
-            string filename = OpenLoadFileDialog();
-            if (filename != "")
-            {
-                LoadImageToLayer(currentLayer, filename);
-            }
+            OnLoadKle();
         }
 
 
@@ -611,7 +799,7 @@ namespace Paint
         // Các hàm xử lí sự kiện Delete, Copy, Cut, Paste, Undo, Redo, Add, Remove, MoveUp, MoveDown, Hide, Show
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            if(shapeEditting != null)
+            if (shapeEditting != null)
             {
                 if (currentLayer.Shapes.Contains(shapeEditting))
                 {
@@ -634,7 +822,7 @@ namespace Paint
 
         private void btnCopy_Click(object sender, RoutedEventArgs e)
         {
-            if(shapeEditting != null)
+            if (shapeEditting != null)
             {
                 shapeCopy = shapeEditting.Clone();
             }
@@ -642,7 +830,7 @@ namespace Paint
 
         private void btnCut_Click(object sender, RoutedEventArgs e)
         {
-            if(shapeEditting != null)
+            if (shapeEditting != null)
             {
                 if (currentLayer.Shapes.Contains(shapeEditting))
                 {
@@ -667,7 +855,7 @@ namespace Paint
 
         private void btnPaste_Click(object sender, RoutedEventArgs e)
         {
-            if(shapeCopy != null)
+            if (shapeCopy != null)
             {
                 DataUndoRedo data = new ShapeUndoRedo()
                 {
@@ -678,7 +866,11 @@ namespace Paint
                 };
                 undoRedoManager.AddUndoRedo(data);
 
+                var newShape = shapeCopy.Clone();
+
                 currentLayer.AddShape(shapeCopy);
+
+                shapeCopy = newShape;
                 LoadAllShapes();
                 EdittingCanvas.Visibility = Visibility.Collapsed;
             }
@@ -691,7 +883,7 @@ namespace Paint
             btnCopy.IsEnabled = true;
             btnCut.IsEnabled = true;
             btnPaste.IsEnabled = true;
-
+            editStackPanel.Opacity = 1;
         }
 
         private void chboxEdit_Unchecked(object sender, RoutedEventArgs e)
@@ -702,13 +894,12 @@ namespace Paint
             btnCopy.IsEnabled = false;
             btnCut.IsEnabled = false;
             btnPaste.IsEnabled = false;
-
+            editStackPanel.Opacity = 0.5;
         }
 
-        
 
         private void btnAddLayer_Click(object sender, RoutedEventArgs e)
-        { 
+        {
             LayerUndoRedo data = new LayerUndoRedo()
             {
                 drawingLayout = drawingLayout,
@@ -719,6 +910,7 @@ namespace Paint
 
             _layerManager.AddLayer((int)drawingCanvas.ActualWidth, (int)drawingCanvas.ActualHeight, drawingLayout);
             data.NewLayer = _layerManager.Layers[_layerManager.Layers.Count - 1];
+            listViewLayers.SelectedIndex = _layerManager.Layers.Count - 1;
             undoRedoManager.AddUndoRedo(data);
         }
 
@@ -786,19 +978,30 @@ namespace Paint
         {
             currentLayer = (Layer)listViewLayers.SelectedItem;
             currentLayerIndex = listViewLayers.SelectedIndex;
-            
-            if(currentLayerIndex < 0)
+
+            var imagePath = "";
+
+            if (currentLayerIndex < 0)
                 return;
             if (currentLayer.IsVisible)
             {
-                btnHideLayer.Content = "Hide";
+                imagePath = $"Assets/hide.png";
+            } else
+            {
+                imagePath = $"Assets/show.png";
             }
-            else
-            { 
-                 btnHideLayer.Content = "Show";
-            }
-            
-            if(isEditting)
+            var image = new System.Windows.Controls.Image
+            {
+                Source = new BitmapImage(new Uri(imagePath, UriKind.Relative)),
+                Width = 24,
+                Height = 24,
+            };
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+
+            btnHideLayer.Content = image;
+
+
+            if (isEditting)
             {
                 isEditting = false;
                 EdittingCanvas.Visibility = Visibility.Collapsed;
@@ -807,16 +1010,27 @@ namespace Paint
 
         private void btnHide_Click(object sender, RoutedEventArgs e)
         {
-            if(currentLayer.IsVisible)
+            var imagePath = "";
+            if (currentLayer.IsVisible)
             {
+                imagePath = $"Assets/hide.png";
                 currentLayer.IsVisible = false;
-                btnHideLayer.Content = "Show";
-            }
-            else
+
+            } else
             {
                 currentLayer.IsVisible = true;
-                btnHideLayer.Content = "Hide";
+                imagePath = $"Assets/show.png";
             }
+
+            var image = new System.Windows.Controls.Image
+            {
+                Source = new BitmapImage(new Uri(imagePath, UriKind.Relative)),
+                Width = 24,
+                Height = 24,
+            };
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+
+            btnHideLayer.Content = image;
             LoadAllShapes();
         }
 
@@ -826,7 +1040,7 @@ namespace Paint
             {
                 System.Windows.Point mousePosition = e.GetPosition(drawingCanvas);
 
-                
+
 
                 // Calculate the zoom factor (you can adjust this to get the desired zoom speed)
                 double zoomFactor = e.Delta > 0 ? 1.1 : 1 / 1.1;
@@ -839,6 +1053,19 @@ namespace Paint
                 translate.X = (1 - zoomFactor) * (mousePosition.X + translate.X);
                 translate.Y = (1 - zoomFactor) * (mousePosition.Y + translate.Y);
 
+            } else if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            {
+
+                // horizontal scrolling
+                if (e.Delta > 0)
+                {
+                    translate.X += 15;
+                } else
+                {
+                    translate.X -= 15;
+                }
+
+
             }
 
         }
@@ -848,7 +1075,7 @@ namespace Paint
             undoRedoManager.Undo();
             LoadAllShapes();
             listViewLayers.SelectedIndex = 0;
-            
+
             EdittingCanvas.Visibility = Visibility.Collapsed;
 
         }
@@ -859,6 +1086,221 @@ namespace Paint
             LoadAllShapes();
             listViewLayers.SelectedIndex = 0;
             EdittingCanvas.Visibility = Visibility.Collapsed;
+        }
+
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            // Get the ScrollViewer object
+            ScrollViewer scv = (ScrollViewer)sender;
+            if (scv != null)
+            {
+                // Check whether the horizontal scrollbar is visible
+                if (scv.ComputedHorizontalScrollBarVisibility == Visibility.Visible)
+                {
+                    // Adjust the offset
+                    translate.X = -scv.VerticalOffset;
+                } else
+                {
+                    // The horizontal scrollbar is not visible
+                    translate.X = 0;
+                }
+
+                // Check whether the vertical scrollbar is visible
+                if (scv.ComputedVerticalScrollBarVisibility == Visibility.Visible)
+                {
+                    // Adjust the offset
+                    translate.Y = -scv.VerticalOffset;
+                } else
+                {
+                    // The vertical scrollbar is not visible
+                    translate.Y = 0;
+                }
+
+
+            }
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Ctrl
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                // Ctrl + Z
+                if (e.Key == Key.Z)
+                {
+                    undoRedoManager.Undo();
+                    LoadAllShapes();
+                    listViewLayers.SelectedIndex = 0;
+                    EdittingCanvas.Visibility = Visibility.Collapsed;
+                }
+
+                // Ctrl + Y
+                if (e.Key == Key.Y)
+                {
+                    undoRedoManager.Redo();
+                    LoadAllShapes();
+                    listViewLayers.SelectedIndex = 0;
+                    EdittingCanvas.Visibility = Visibility.Collapsed;
+                }
+
+                // Ctrl + E
+                if (e.Key == Key.E)
+                {
+                    if (isEditting)
+                    {
+                        isEditting = false;
+                        btnEdit.IsChecked = true;
+                        chboxEdit_Checked(sender, null);
+                    } else
+                    {
+                        isEditting = true;
+                        btnEdit.IsChecked = false;
+                        chboxEdit_Unchecked(sender, null);
+                    }
+                }
+
+                // Ctrl + C
+                if (e.Key == Key.C)
+                {
+                    if (shapeEditting != null)
+                    {
+                        shapeCopy = shapeEditting.Clone();
+                    }
+                }
+
+                // Ctrl + V
+                if (e.Key == Key.V)
+                {
+                    if (shapeCopy != null)
+                    {
+                        DataUndoRedo data = new ShapeUndoRedo()
+                        {
+                            CurrentLayer = currentLayer,
+                            NewShape = shapeCopy.Clone(),
+                            IndexInLayer = currentLayer.Shapes.Count,
+                            TypeOfData = ShapeUndoRedo.Type.Add
+                        };
+                        undoRedoManager.AddUndoRedo(data);
+
+                        var newShape = shapeCopy.Clone();
+
+                        currentLayer.AddShape(shapeCopy);
+
+                        shapeCopy = newShape;
+                        LoadAllShapes();
+                        EdittingCanvas.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                // Ctrl + X
+                if (e.Key == Key.X)
+                {
+                    if (shapeEditting != null)
+                    {
+                        if (currentLayer.Shapes.Contains(shapeEditting))
+                        {
+                            shapeCopy = shapeEditting.Clone();
+
+                            DataUndoRedo data = new ShapeUndoRedo()
+                            {
+                                CurrentLayer = currentLayer,
+                                OldShape = shapeEditting.Clone(),
+                                IndexInLayer = currentLayer.Shapes.IndexOf(shapeEditting),
+                                TypeOfData = ShapeUndoRedo.Type.Remove
+                            };
+                            undoRedoManager.AddUndoRedo(data);
+
+                            currentLayer.RemoveShape(shapeEditting);
+                            LoadAllShapes();
+                            EdittingCanvas.Visibility = Visibility.Collapsed;
+                            shapeEditting = null;
+                        }
+                    }
+                }
+
+                // Ctrl + S
+                if (e.Key == Key.S)
+                {
+                    OnSaveKle();
+                }
+
+                // Ctrl + Shift + S
+                if (e.Key == Key.S && Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    OnSaveAs();
+                }
+
+                // Ctrl + O
+                if (e.Key == Key.O)
+                {
+                    string oldFilename = _filename;
+                    _filename = "";
+                    OnLoadKle();
+                    if (_filename == "")
+                    {
+                        _filename = oldFilename;
+                    }
+                }
+
+                // Ctrl + N
+                if (e.Key == Key.N)
+                {
+                    LayerUndoRedo data = new LayerUndoRedo()
+                    {
+                        drawingLayout = drawingLayout,
+                        layerManager = _layerManager,
+                        TypeOfData = LayerUndoRedo.Type.Add,
+                        IndexInLayout = _layerManager.Layers.Count
+                    };
+
+                    _layerManager.AddLayer((int)drawingCanvas.ActualWidth, (int)drawingCanvas.ActualHeight, drawingLayout);
+                    data.NewLayer = _layerManager.Layers[_layerManager.Layers.Count - 1];
+                    listViewLayers.SelectedIndex = _layerManager.Layers.Count - 1;
+                    undoRedoManager.AddUndoRedo(data);
+                }
+            }
+
+            // Delete
+            if (e.Key == Key.Delete)
+            {
+                if (shapeEditting != null)
+                {
+                    if (currentLayer.Shapes.Contains(shapeEditting))
+                    {
+                        DataUndoRedo data = new ShapeUndoRedo()
+                        {
+                            CurrentLayer = currentLayer,
+                            OldShape = shapeEditting.Clone(),
+                            IndexInLayer = currentLayer.Shapes.IndexOf(shapeEditting),
+                            TypeOfData = ShapeUndoRedo.Type.Remove
+                        };
+                        undoRedoManager.AddUndoRedo(data);
+
+                        currentLayer.RemoveShape(shapeEditting);
+                        LoadAllShapes();
+                        EdittingCanvas.Visibility = Visibility.Collapsed;
+                        shapeEditting = null;
+                    }
+                }
+            }
+        }
+
+        private void btnExport_Click(object sender, RoutedEventArgs e)
+        {
+            var filename = OpenSaveFileDialog();
+            if (filename != "")
+            {
+                SaveCanvases(filename);
+            }
+        }
+
+        private void btnInsert_Click(object sender, RoutedEventArgs e)
+        {
+            var filename = OpenLoadFileDialog();
+            if (filename != "")
+            {
+                LoadImageToLayer(currentLayer, filename);
+            }
         }
     }
 }
