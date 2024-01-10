@@ -49,3 +49,5 @@
 - `Ctrl` + `X` : Cut
 - `Ctrl` + `E` : Chuyển đổi giữa Edit Mode và Draw Mode
 - `Ctrl` + `MouseWheel` : Zoom in, zoom out
+
+## Link demo trên youtube: https://youtu.be/B0b6HALAcjI 
