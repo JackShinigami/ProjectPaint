@@ -129,6 +129,7 @@ namespace Paint
                         shapeName += kleStringArray[index][j];
                         j++;
                     }
+
                     IShape shape = shapeFactory.Create(shapeName);
                     shape.FromKleString(kleStringArray[index]);
                     Shapes.Add(shape);

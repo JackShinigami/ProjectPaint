@@ -78,8 +78,7 @@ namespace Paint
             {
                 kleString += point.X.ToString() + " " + point.Y.ToString() + " ";
             }
-            kleString += DashArray.ToString()
-                + " " + bitmap.UriSource.ToString();
+
             return kleString;
 
         }
@@ -103,7 +102,17 @@ namespace Paint
                 {
                     Points.Add(new Point(double.Parse(words[i]), double.Parse(words[i + 1])));
                 }
-                bitmap = new BitmapImage(new Uri(words[words.Length - 1]));
+
+                // the last words are the path to the image
+                string uri = "";
+                for (int i = 8; i < words.Length; i++)
+                {
+                    uri += words[i];
+                    if (i != words.Length - 1)
+                        uri += " ";
+                }
+
+                bitmap = new BitmapImage(new Uri(uri.Trim()));
 
                 return this;
 

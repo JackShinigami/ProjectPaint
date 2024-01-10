@@ -105,6 +105,7 @@ namespace Paint
                     ability.Name, ability
                 );
 
+
                 var button = new Button()
                 {
                     Width = 30,
@@ -163,6 +164,8 @@ namespace Paint
                 Grid.SetRow(buttonBorder, row);
                 Grid.SetColumn(buttonBorder, col);
             }
+
+            ShapeFactory.Prototypes.Add("ImageShape", new ImageShape(null));
 
             foreach (var brush in _brushes)
             {
@@ -553,7 +556,8 @@ namespace Paint
             {
                 _filename = OpenSaveKleFileDialog();
             }
-            SaveToKleFile(_filename);
+            if (_filename != "")
+                SaveToKleFile(_filename);
         }
 
         /// <summary>
@@ -625,6 +629,7 @@ namespace Paint
         private string OpenSaveFileDialog()
         {
             var dialog = new Microsoft.Win32.SaveFileDialog();
+            dialog.FileName = _filename;
             dialog.Filter = "PNG (*.png)|*.png";
             dialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
             if (dialog.ShowDialog() == true)
@@ -648,12 +653,7 @@ namespace Paint
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
 
-
-            if (_filename == "")
-            {
-                _filename = OpenSaveFileDialog();
-            }
-            SaveCanvases(_filename);
+            OnSaveAs();
 
         }
 
@@ -703,7 +703,7 @@ namespace Paint
                         }
                     } else
                     {
-                        layerInfo += kleString + "\n";                    
+                        layerInfo += kleString + "\n";
                     }
                 }
                 listViewLayers.SelectedIndex = 0;
@@ -763,11 +763,7 @@ namespace Paint
 
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
-            string filename = OpenLoadFileDialog();
-            if (filename != "")
-            {
-                LoadImageToLayer(currentLayer, filename);
-            }
+            OnLoadKle();
         }
 
 
@@ -1268,6 +1264,24 @@ namespace Paint
                         shapeEditting = null;
                     }
                 }
+            }
+        }
+
+        private void btnExport_Click(object sender, RoutedEventArgs e)
+        {
+            var filename = OpenSaveFileDialog();
+            if (filename != "")
+            {
+                SaveCanvases(filename);
+            }
+        }
+
+        private void btnInsert_Click(object sender, RoutedEventArgs e)
+        {
+            var filename = OpenLoadFileDialog();
+            if (filename != "")
+            {
+                LoadImageToLayer(currentLayer, filename);
             }
         }
     }
