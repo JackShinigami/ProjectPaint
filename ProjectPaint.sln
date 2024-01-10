@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextLib", "TextLib\TextLib.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Paint", "Paint\Paint.csproj", "{214AE392-44F8-4DFF-8642-DB7011CA9C45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TriangleLib", "TriangleLib\TriangleLib.csproj", "{6FB7CCB9-8B16-40DC-B36F-DE23BD42968F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TriangleLib", "TriangleLib\TriangleLib.csproj", "{6FB7CCB9-8B16-40DC-B36F-DE23BD42968F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IKleFileContract", "IKleFile\IKleFileContract.csproj", "{A3E572D2-0847-4BE9-9C1D-66521949C2F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{6FB7CCB9-8B16-40DC-B36F-DE23BD42968F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FB7CCB9-8B16-40DC-B36F-DE23BD42968F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FB7CCB9-8B16-40DC-B36F-DE23BD42968F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3E572D2-0847-4BE9-9C1D-66521949C2F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3E572D2-0847-4BE9-9C1D-66521949C2F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3E572D2-0847-4BE9-9C1D-66521949C2F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3E572D2-0847-4BE9-9C1D-66521949C2F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

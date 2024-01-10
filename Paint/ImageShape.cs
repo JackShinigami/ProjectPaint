@@ -50,5 +50,68 @@ namespace Paint
             Canvas.SetTop(image, start.Y);
             return image;
         }
+
+        public override string ToKleString(int index = 0)
+        {
+            string kleString = "";
+
+            // add name
+            kleString += Name + " ";
+            // add brush
+            kleString += Brush.ToString() + " ";
+            // add thickness
+            kleString += Thickness.ToString() + " ";
+            // add dash array as comma separated string
+
+
+
+            for (int i = 0; i < DashArray.Count; i++)
+            {
+                kleString += DashArray[i].ToString();
+                if (i != DashArray.Count - 1)
+                    kleString += ",";
+            }
+
+            kleString += " ";
+            // add points
+            foreach (var point in Points)
+            {
+                kleString += point.X.ToString() + " " + point.Y.ToString() + " ";
+            }
+            kleString += DashArray.ToString()
+                + " " + bitmap.UriSource.ToString();
+            return kleString;
+
+        }
+
+        public override object? FromKleString(string kleString)
+        {
+            try
+            {
+                string[] words = kleString.Split(' ');
+                if (words[0] != Name)
+                    return null;
+                Brush = (Brush)new BrushConverter().ConvertFromString(words[1]);
+                Thickness = int.Parse(words[2]);
+                string[] dashArrayString = words[3].Split(',');
+                if (dashArrayString[0] != "")
+                    foreach (var dash in dashArrayString)
+                    {
+                        DashArray.Add(double.Parse(dash));
+                    }
+                for (int i = 4; i < 8; i += 2)
+                {
+                    Points.Add(new Point(double.Parse(words[i]), double.Parse(words[i + 1])));
+                }
+                bitmap = new BitmapImage(new Uri(words[words.Length - 1]));
+
+                return this;
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }

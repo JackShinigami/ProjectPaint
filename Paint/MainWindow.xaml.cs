@@ -63,6 +63,12 @@ namespace Paint
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
+
+            if (_filename == "")
+                Title = $"Paint - Unnamed";
+            else Title = $"Paint - {_filename}";
+
             var abilities = new List<IShape>();
 
             // Do tim cac kha nang
@@ -95,7 +101,7 @@ namespace Paint
 
             foreach (var ability in abilities)
             {
-                _factory.Prototypes.Add(
+                ShapeFactory.Prototypes.Add(
                     ability.Name, ability
                 );
 
@@ -451,8 +457,6 @@ namespace Paint
             if (isDrawing)
             {
 
-                Title = $"editing: {isEditting.ToString()}, drawing: {isDrawing.ToString()}";
-
                 preview = _factory.Create(_choice);
 
                 preview.Brush = _brush;
@@ -526,6 +530,46 @@ namespace Paint
             }
         }
 
+        /// <summary>
+        /// Lưu file KLE (Khánh Lê)
+        /// </summary>
+        /// <param name="filename"></param>
+        void SaveToKleFile(string filename)
+        {
+            string kleString = "";
+            foreach (var layer in _layerManager.Layers)
+            {
+                kleString += layer.ToKleString(_layerManager.Layers.IndexOf(layer));
+            }
+            File.WriteAllText(filename, kleString);
+        }
+
+        /// <summary>
+        /// Lưu file KLE (Khánh Lê)
+        /// </summary>
+        void OnSaveKle()
+        {
+            if (_filename == "")
+            {
+                _filename = OpenSaveKleFileDialog();
+            }
+            SaveToKleFile(_filename);
+        }
+
+        /// <summary>
+        /// Lưu như... (Khánh Lê)
+        /// </summary>
+        void OnSaveAs()
+        {
+            string oldFilename = _filename;
+            _filename = "";
+            OnSaveKle();
+            if (_filename == "")
+            {
+                _filename = oldFilename;
+            }
+        }
+
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (preview != null)
@@ -589,6 +633,17 @@ namespace Paint
             }
             return "";
         }
+        private string OpenSaveKleFileDialog()
+        {
+            var dialog = new Microsoft.Win32.SaveFileDialog();
+            dialog.Filter = "KLE (*.kle)|*.kle";
+            dialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            if (dialog.ShowDialog() == true)
+            {
+                return dialog.FileName;
+            }
+            return "";
+        }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
@@ -612,6 +667,48 @@ namespace Paint
                 return dialog.FileName;
             }
             return "";
+        }
+        private string OpenLoadKleFileDialog()
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Filter = "KLE (*.kle)|*.kle";
+            dialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            if (dialog.ShowDialog() == true)
+            {
+                return dialog.FileName;
+            }
+            return "";
+        }
+
+        private void OnLoadKle()
+        {
+            _filename = OpenLoadKleFileDialog();
+            if (_filename != "")
+            {
+                string[] kleStringArray = File.ReadAllLines(_filename);
+                _layerManager.Layers.Clear();
+                string layerInfo = "";
+                Layer layer = new Layer();
+                foreach (var kleString in kleStringArray)
+                {
+                    if (kleString == "Layer")
+                    {
+                        if (layerInfo != "")
+                        {
+                            layer.FromKleString(layerInfo);
+                            layer.GetBitmap();
+                            _layerManager.Layers.Add(layer);
+                            layerInfo = "";
+                            layer = new Layer();
+                        }
+                    } else
+                    {
+                        layerInfo += kleString + "\n";                    
+                    }
+                }
+                listViewLayers.SelectedIndex = 0;
+                LoadAllShapes();
+            }
         }
 
         private void LoadImageToLayer(Layer layer, string filename)
@@ -1011,9 +1108,10 @@ namespace Paint
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            // Ctrl + Z
+            // Ctrl
             if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
+                // Ctrl + Z
                 if (e.Key == Key.Z)
                 {
                     undoRedoManager.Undo();
@@ -1057,7 +1155,6 @@ namespace Paint
                 }
 
                 // Ctrl + V
-
                 if (e.Key == Key.V)
                 {
                     if (shapeCopy != null)
@@ -1082,7 +1179,6 @@ namespace Paint
                 }
 
                 // Ctrl + X
-
                 if (e.Key == Key.X)
                 {
                     if (shapeEditting != null)
@@ -1109,23 +1205,26 @@ namespace Paint
                 }
 
                 // Ctrl + S
-
                 if (e.Key == Key.S)
                 {
-                    if (_filename == "")
-                    {
-                        _filename = OpenSaveFileDialog();
-                    }
-                    SaveCanvases(_filename);
+                    OnSaveKle();
+                }
+
+                // Ctrl + Shift + S
+                if (e.Key == Key.S && Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    OnSaveAs();
                 }
 
                 // Ctrl + O
                 if (e.Key == Key.O)
                 {
-                    string filename = OpenLoadFileDialog();
-                    if (filename != "")
+                    string oldFilename = _filename;
+                    _filename = "";
+                    OnLoadKle();
+                    if (_filename == "")
                     {
-                        LoadImageToLayer(currentLayer, filename);
+                        _filename = oldFilename;
                     }
                 }
 
@@ -1144,6 +1243,30 @@ namespace Paint
                     data.NewLayer = _layerManager.Layers[_layerManager.Layers.Count - 1];
                     listViewLayers.SelectedIndex = _layerManager.Layers.Count - 1;
                     undoRedoManager.AddUndoRedo(data);
+                }
+            }
+
+            // Delete
+            if (e.Key == Key.Delete)
+            {
+                if (shapeEditting != null)
+                {
+                    if (currentLayer.Shapes.Contains(shapeEditting))
+                    {
+                        DataUndoRedo data = new ShapeUndoRedo()
+                        {
+                            CurrentLayer = currentLayer,
+                            OldShape = shapeEditting.Clone(),
+                            IndexInLayer = currentLayer.Shapes.IndexOf(shapeEditting),
+                            TypeOfData = ShapeUndoRedo.Type.Remove
+                        };
+                        undoRedoManager.AddUndoRedo(data);
+
+                        currentLayer.RemoveShape(shapeEditting);
+                        LoadAllShapes();
+                        EdittingCanvas.Visibility = Visibility.Collapsed;
+                        shapeEditting = null;
+                    }
                 }
             }
         }

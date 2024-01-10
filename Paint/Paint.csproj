@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EllipseLib\EllipseLib.csproj" />
+    <ProjectReference Include="..\IKleFile\IKleFileContract.csproj" />
     <ProjectReference Include="..\IShapeContract\IShapeContract.csproj" />
     <ProjectReference Include="..\LineLib\LineLib.csproj" />
     <ProjectReference Include="..\RentangleLib\RectangleLib.csproj" />
