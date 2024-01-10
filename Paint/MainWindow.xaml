@@ -104,36 +104,80 @@
             <ColumnDefinition Width="120" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.ColumnSpan="3">
-            <DockPanel>
-                <StackPanel Name="actionsStackPanel"
-                            Orientation="Horizontal"
-                            DockPanel.Dock="Left">
-                    <Button Margin="10, 10, 0, 10"
+        <StackPanel Grid.ColumnSpan="3"
+                    Grid.RowSpan="2">
+            <DockPanel VerticalAlignment="Center">
+                <Grid Name="actionsGrid"
+                      Margin="10"
+                      DockPanel.Dock="Left">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <Button Grid.Row="0"
+                            Grid.Column="0"
                             Name="btnSave"
-                            Width="60"
-                            Height="60"
+                            Width="40"
+                            Height="40"
                             Click="btnSave_Click"
+                            ToolTip="Save"
                             BorderThickness="0"
                             Style="{StaticResource TransparentButtonStyle}">
                         <Image Source="Assets/save.png"
-                               Width="40"
-                               Height="40"
+                               Width="35"
+                               Height="30"
                                RenderOptions.BitmapScalingMode="HighQuality" />
                     </Button>
-                    <Button Margin="5, 10, 0, 10"
+                    <Button Grid.Row="0"
+                            Grid.Column="1"
                             Name="btnLoad"
-                            Width="60"
-                            Height="60"
+                            ToolTip="Open"
                             Click="btnLoad_Click"
+                            Width="40"
+                            Height="40"
                             BorderThickness="0"
                             Style="{StaticResource TransparentButtonStyle}">
                         <Image Source="Assets/open.png"
-                               Width="44"
-                               Height="50"
+                               Width="35"
+                               Height="30"
                                RenderOptions.BitmapScalingMode="HighQuality" />
                     </Button>
-                </StackPanel>
+                    <Button Grid.Row="1"
+                            Grid.Column="0"
+                            Name="btnInsert"
+                            ToolTip="Insert"
+                            Click="btnInsert_Click"
+                            Width="40"
+                            Height="40"
+                            BorderThickness="0"
+                            Style="{StaticResource TransparentButtonStyle}">
+                        <Image Source="Assets/insert.png"
+                               Width="35"
+                               Height="30"
+                               RenderOptions.BitmapScalingMode="HighQuality" />
+                    </Button>
+                    <Button Grid.Row="1"
+                            Grid.Column="1"
+                            Name="btnExport"
+                            ToolTip="Export"
+                            Click="btnExport_Click"
+                            Width="40"
+                            Height="40"
+                            BorderThickness="0"
+                            Style="{StaticResource TransparentButtonStyle}">
+                        <Image Source="Assets/export.png"
+                               Width="35"
+                               Height="30"
+                               RenderOptions.BitmapScalingMode="HighQuality" />
+                    </Button>
+                </Grid>
 
                 <Grid DockPanel.Dock="Top">
                     <StackPanel Orientation="Horizontal"
@@ -149,6 +193,7 @@
                                 <CheckBox Name="btnEdit"
                                           Content="Edit"
                                           Width="50"
+                                          ToolTip="Edit Mode/Draw Mode"
                                           Height="35"
                                           Checked="chboxEdit_Checked"
                                           Unchecked="chboxEdit_Unchecked"
@@ -157,6 +202,7 @@
                                         Width="50"
                                         Height="35"
                                         Click="btnDelete_Click"
+                                        ToolTip="Delete"
                                         IsEnabled="False"
                                         Style="{StaticResource TransparentButtonStyle}"
                                         Background="LightGray"
@@ -170,6 +216,7 @@
                                         Width="50"
                                         Height="35"
                                         Click="btnCopy_Click"
+                                        ToolTip="Copy"
                                         IsEnabled="False"
                                         Style="{StaticResource TransparentButtonStyle}"
                                         BorderThickness="0">
@@ -182,6 +229,7 @@
                                         Width="50"
                                         Height="35"
                                         Click="btnCut_Click"
+                                        ToolTip="Cut"
                                         IsEnabled="False"
                                         Style="{StaticResource TransparentButtonStyle}"
                                         BorderThickness="0">
@@ -194,6 +242,7 @@
                                         Width="50"
                                         Height="35"
                                         Click="btnPaste_Click"
+                                        ToolTip="Paste"
                                         IsEnabled="False"
                                         Style="{StaticResource TransparentButtonStyle}"
                                         BorderThickness="0"
@@ -217,6 +266,7 @@
                                         Width="50"
                                         Height="35"
                                         Click="btnUndo_Click"
+                                        ToolTip="Undo"
                                         Style="{StaticResource TransparentButtonStyle}"
                                         BorderThickness="0">
                                     <Image Source="Assets/undo.png"
@@ -228,6 +278,7 @@
                                         Width="50"
                                         Height="35"
                                         Click="btnRedo_Click"
+                                        ToolTip="Redo"
                                         Style="{StaticResource TransparentButtonStyle}"
                                         BorderThickness="0">
                                     <Image Source="Assets/redo.png"
@@ -249,6 +300,7 @@
                                         Width="50"
                                         Height="35"
                                         Click="btnAddLayer_Click"
+                                        ToolTip="Add Layer"
                                         Style="{StaticResource TransparentButtonStyle}"
                                         BorderThickness="0">
                                     <Image Source="Assets/add_layer.png"
@@ -260,6 +312,7 @@
                                         Width="50"
                                         Height="35"
                                         Click="btnRemoveLayer_Click"
+                                        ToolTip="Remove Layer"
                                         Style="{StaticResource TransparentButtonStyle}"
                                         BorderThickness="0">
                                     <Image Source="Assets/remove_layer.png"
@@ -271,6 +324,7 @@
                                         Width="50"
                                         Height="35"
                                         Click="btnMoveUpLayer_Click"
+                                        ToolTip="Move Up Layer"
                                         Style="{StaticResource TransparentButtonStyle}"
                                         BorderThickness="0">
                                     <Image Source="Assets/up_layer.png"
@@ -282,6 +336,7 @@
                                         Width="50"
                                         Height="35"
                                         Click="btnMoveDownLayer_Click"
+                                        ToolTip="Move Down Layer"
                                         Style="{StaticResource TransparentButtonStyle}"
                                         BorderThickness="0">
                                     <Image Source="Assets/down_layer.png"
@@ -293,6 +348,7 @@
                                         Width="50"
                                         Height="35"
                                         Click="btnHide_Click"
+                                        ToolTip="Show/Hide Layer"
                                         Style="{StaticResource TransparentButtonStyle}"
                                         BorderThickness="0">
                                     <Image Source="Assets/hide.png"
@@ -322,6 +378,7 @@
                                         Minimum="1"
                                         Maximum="10"
                                         Value="1"
+                                        ToolTip="PenWidth"
                                         TickFrequency="1"
                                         TickPlacement="BottomRight"
                                         ValueChanged="sliderSize_ValueChanged" />
@@ -329,6 +386,7 @@
 
                             <ComboBox Margin="0, 0, 40, 0"
                                       Name="typeComboBox"
+                                      ToolTip="Line Type"
                                       Width="100"
                                       Height="20"
                                       Background="Transparent" />
@@ -338,6 +396,7 @@
                                     BorderThickness="1"
                                     CornerRadius="10"
                                     HorizontalAlignment="Left"
+                                            ToolTip="Choose Shape"
                                     VerticalAlignment="Top">
                                 <StackPanel Name="shapesStackPanel"
                                             Orientation="Horizontal">
@@ -367,43 +426,44 @@
                                 </StackPanel>
                             </Border>
                         </StackPanel>
-                        
 
-                            <Border Margin="0, 10, 40, 0"
-                                    BorderBrush="Gray"
-                                    BorderThickness="1"
-                                    CornerRadius="10"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Top">
-                                <StackPanel Name="colorsStackPanel"
-                                            Orientation="Horizontal">
-                                    <Grid Name="colorsGrid">
-                                        <!-- Row Definitions -->
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
 
-                                        <!-- Column Definitions -->
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                    </Grid>
-                                </StackPanel>
-                            </Border>
-                        
-                        
+                        <Border Margin="0, 10, 40, 0"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                HorizontalAlignment="Center"
+                                ToolTip="Choose Color"
+                                VerticalAlignment="Top">
+                            <StackPanel Name="colorsStackPanel"
+                                        Orientation="Horizontal">
+                                <Grid Name="colorsGrid">
+                                    <!-- Row Definitions -->
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Column Definitions -->
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+
                     </StackPanel>
                 </Grid>
 

@@ -16,7 +16,9 @@
     <None Remove="Assets\down_layer.png" />
     <None Remove="Assets\edit.png" />
     <None Remove="Assets\ellipse.png" />
+    <None Remove="Assets\export.png" />
     <None Remove="Assets\hide.png" />
+    <None Remove="Assets\insert.png" />
     <None Remove="Assets\line.png" />
     <None Remove="Assets\move.png" />
     <None Remove="Assets\open.png" />
@@ -69,9 +71,11 @@
     <Resource Include="Assets\ellipse.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\export.png" />
     <Resource Include="Assets\hide.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\insert.png" />
     <Resource Include="Assets\line.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
