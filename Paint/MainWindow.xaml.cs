@@ -346,7 +346,25 @@ namespace Paint
                 }
                 currentLayer.GetBitmap();
             };
+
+            this.MouseMove += MainWindow_MouseMove;
         }
+
+        private void MainWindow_MouseMove(object sender, MouseEventArgs e)
+        {
+            // Nếu chuột đang được nhấn
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                if (isDrawing)
+                {
+                    if (!touchingCanvas.IsMouseOver)
+                    {
+                        Canvas_MouseUp(null, null);
+                    }
+                }
+            }
+        }
+
 
         //các biến lưu trạng thái
         bool isDrawing = false;
