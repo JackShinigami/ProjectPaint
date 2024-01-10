@@ -696,8 +696,8 @@ namespace Paint
                         if (layerInfo != "")
                         {
                             layer.FromKleString(layerInfo);
+                            _layerManager.AddLayer(layer, (int)drawingCanvas.ActualWidth, (int)drawingCanvas.ActualHeight, drawingLayout);
                             layer.GetBitmap();
-                            _layerManager.Layers.Add(layer);
                             layerInfo = "";
                             layer = new Layer();
                         }
